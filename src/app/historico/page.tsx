@@ -18,6 +18,9 @@ export default function HistoricoPage() {
   const [emergencias, setEmergencias] = useState<Emergency[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterYear, setFilterYear] = useState<string>('all');
+  const [filterMunicipio, setFilterMunicipio] = useState<string>('all');
+  const [tablePage, setTablePage] = useState(0);
+  const PAGE_SIZE = 50;
 
   useEffect(() => {
     fetch('/api/emergencias?limit=2000')
@@ -37,10 +40,25 @@ export default function HistoricoPage() {
     return Array.from(ySet).sort().reverse();
   }, [emergencias]);
 
+  const municipios = useMemo(() => {
+    const mSet = new Set<string>();
+    emergencias.forEach(e => {
+      if (e.municipio) mSet.add(e.municipio);
+    });
+    return Array.from(mSet).sort();
+  }, [emergencias]);
+
   const filtered = useMemo(() => {
-    if (filterYear === 'all') return emergencias;
-    return emergencias.filter(e => e.fecha?.startsWith(filterYear));
-  }, [emergencias, filterYear]);
+    setTablePage(0);
+    let result = emergencias;
+    if (filterYear !== 'all') {
+      result = result.filter(e => e.fecha?.startsWith(filterYear));
+    }
+    if (filterMunicipio !== 'all') {
+      result = result.filter(e => e.municipio === filterMunicipio);
+    }
+    return result;
+  }, [emergencias, filterYear, filterMunicipio]);
 
   const byMunicipio = useMemo(() => {
     const map: Record<string, number> = {};
@@ -87,7 +105,7 @@ export default function HistoricoPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex flex-wrap items-center gap-3">
           <label className="text-sm text-zinc-400 flex items-center gap-1.5">
             <Calendar size={14} /> Año:
           </label>
@@ -99,6 +117,27 @@ export default function HistoricoPage() {
             <option value="all">Todos</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
+
+          <label className="text-sm text-zinc-400 flex items-center gap-1.5 ml-2">
+            Municipio:
+          </label>
+          <select
+            value={filterMunicipio}
+            onChange={(e) => setFilterMunicipio(e.target.value)}
+            className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 focus:border-blue-500 focus:outline-none max-w-[200px]"
+          >
+            <option value="all">Todos</option>
+            {municipios.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+
+          {(filterYear !== 'all' || filterMunicipio !== 'all') && (
+            <button
+              onClick={() => { setFilterYear('all'); setFilterMunicipio('all'); }}
+              className="text-xs text-blue-400 hover:text-blue-300 underline ml-2"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -231,7 +270,7 @@ export default function HistoricoPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.slice(0, 50).map((e, i) => (
+                    {filtered.slice(tablePage * PAGE_SIZE, (tablePage + 1) * PAGE_SIZE).map((e, i) => (
                       <tr key={i} className="border-b border-zinc-800 hover:bg-zinc-800/50">
                         <td className="py-2 pr-4 text-zinc-300">{e.fecha ? formatDate(e.fecha) : '-'}</td>
                         <td className="py-2 pr-4 text-zinc-200 font-medium">{e.municipio || '-'}</td>
@@ -242,10 +281,31 @@ export default function HistoricoPage() {
                     ))}
                   </tbody>
                 </table>
-                {filtered.length > 50 && (
-                  <p className="text-xs text-zinc-500 mt-3 text-center">
-                    Mostrando 50 de {filtered.length} registros
-                  </p>
+                {filtered.length > PAGE_SIZE && (
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-800">
+                    <p className="text-xs text-zinc-500">
+                      {tablePage * PAGE_SIZE + 1}–{Math.min((tablePage + 1) * PAGE_SIZE, filtered.length)} de {filtered.length} registros
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setTablePage(p => Math.max(0, p - 1))}
+                        disabled={tablePage === 0}
+                        className="px-3 py-1 text-xs rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        Anterior
+                      </button>
+                      <span className="text-xs text-zinc-400">
+                        {tablePage + 1} / {Math.ceil(filtered.length / PAGE_SIZE)}
+                      </span>
+                      <button
+                        onClick={() => setTablePage(p => Math.min(Math.ceil(filtered.length / PAGE_SIZE) - 1, p + 1))}
+                        disabled={(tablePage + 1) * PAGE_SIZE >= filtered.length}
+                        className="px-3 py-1 text-xs rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        Siguiente
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </Card>

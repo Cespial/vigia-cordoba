@@ -14,8 +14,10 @@ import { formatNumber } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
   ArrowLeft, MapPin, Users, Droplets, Activity,
-  Thermometer, Wind, Navigation
+  Thermometer, Wind, Navigation, Shield, AlertTriangle,
+  Phone, Map, Radio, Home as HomeIcon
 } from 'lucide-react';
+import { recommendations, emergencyContacts } from '@/data/recommendations';
 
 export default function MunicipioPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -168,7 +170,7 @@ export default function MunicipioPage({ params }: { params: Promise<{ slug: stri
         )}
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           <PrecipitationChart
             lat={municipality.lat}
             lon={municipality.lon}
@@ -180,6 +182,63 @@ export default function MunicipioPage({ params }: { params: Promise<{ slug: stri
             title={`Caudal — ${municipality.name}`}
           />
         </div>
+
+        {/* Recommendations */}
+        {alert && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2">
+                  <Shield size={16} className="text-blue-500" />
+                  Recomendaciones
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <div className="space-y-2">
+              {recommendations[alert.alertLevel.level].map((rec, i) => {
+                const iconMap = {
+                  shield: <Shield size={14} className="text-blue-400 shrink-0" />,
+                  alert: <AlertTriangle size={14} className="text-orange-400 shrink-0" />,
+                  phone: <Phone size={14} className="text-green-400 shrink-0" />,
+                  map: <Map size={14} className="text-cyan-400 shrink-0" />,
+                  radio: <Radio size={14} className="text-purple-400 shrink-0" />,
+                  home: <HomeIcon size={14} className="text-yellow-400 shrink-0" />,
+                };
+                return (
+                  <div key={i} className="flex items-start gap-2 text-sm text-zinc-300">
+                    {iconMap[rec.icon]}
+                    <span>{rec.action}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Emergency contacts */}
+        {alert && alert.alertLevel.level !== 'verde' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2">
+                  <Phone size={16} className="text-green-500" />
+                  Contactos de Emergencia
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {emergencyContacts.map(c => (
+                <div key={c.number} className="flex items-center gap-2 rounded-lg border border-zinc-700 p-2">
+                  <Phone size={14} className="text-green-400 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-zinc-200 truncate">{c.name}</div>
+                    <div className="text-xs text-zinc-400">{c.number}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
       </main>
     </div>
   );
