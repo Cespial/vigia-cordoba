@@ -1,15 +1,21 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap } from 'react-leaflet';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap, GeoJSON, CircleMarker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { municipalities, monitoringPoints, CORDOBA_BOUNDS } from '@/data/municipalities';
+import { municipalities, monitoringPoints, CORDOBA_BOUNDS, cuencas } from '@/data/municipalities';
 import type { MunicipalAlert } from '@/types';
 import { formatNumber } from '@/lib/utils';
 import { alertLevels } from '@/data/thresholds';
 import MapLegend from './MapLegend';
+import LayerControl, { type MapLayer } from './LayerControl';
 import Link from 'next/link';
+
+// Data imports
+import boundariesData from '@/data/cordoba-boundaries.json';
+import riversData from '@/data/cordoba-rivers.json';
+import stationsData from '@/data/ideam-stations.json';
 
 // Tile layers
 const SATELLITE_TILES = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
@@ -49,7 +55,16 @@ function createMonitoringIcon(): L.DivIcon {
   });
 }
 
-// Component to set bounds
+function createStationIcon(active: boolean): L.DivIcon {
+  const color = active ? '#10b981' : '#6b7280';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:8px;height:8px;background:${color};border-radius:50%;border:1.5px solid rgba(255,255,255,0.6);"></div>`,
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+  });
+}
+
 function SetBounds() {
   const map = useMap();
   useEffect(() => {
@@ -61,6 +76,17 @@ function SetBounds() {
   return null;
 }
 
+// Map municipality names to cuenca colors
+function getCuencaColor(muniName: string): string {
+  const muni = municipalities.find(m =>
+    muniName.toLowerCase().includes(m.name.toLowerCase()) ||
+    m.name.toLowerCase().includes(muniName.toLowerCase())
+  );
+  if (!muni) return '#374151';
+  const cuenca = cuencas.find(c => c.name === muni.cuenca);
+  return cuenca?.color || '#374151';
+}
+
 interface MapViewProps {
   alerts: MunicipalAlert[];
   onSelectMunicipality?: (slug: string) => void;
@@ -68,20 +94,73 @@ interface MapViewProps {
 
 export default function MapView({ alerts }: MapViewProps) {
   const [useSatellite, setUseSatellite] = useState(true);
-  const alertMap = new Map(alerts.map(a => [a.municipality.slug, a]));
+  const [layers, setLayers] = useState<MapLayer[]>([
+    { id: 'boundaries', label: 'Límites municipales', color: '#60a5fa', visible: true },
+    { id: 'rivers', label: 'Red hídrica', color: '#38bdf8', visible: true },
+    { id: 'stations', label: 'Estaciones IDEAM', color: '#10b981', visible: false },
+    { id: 'alerts', label: 'Alertas municipales', color: '#f97316', visible: true },
+    { id: 'monitoring', label: 'Puntos monitoreo', color: '#2563eb', visible: true },
+  ]);
+
+  const alertMap = useMemo(() => new Map(alerts.map(a => [a.municipality.slug, a])), [alerts]);
+
+  const toggleLayer = useCallback((layerId: string) => {
+    setLayers(prev => prev.map(l => l.id === layerId ? { ...l, visible: !l.visible } : l));
+  }, []);
+
+  const isVisible = useCallback((id: string) => layers.find(l => l.id === id)?.visible ?? true, [layers]);
+
+  // Style for municipality boundaries
+  const boundaryStyle = useCallback((feature: GeoJSON.Feature | undefined) => {
+    const name = feature?.properties?.shapeName || '';
+    const muni = municipalities.find(m =>
+      name.toLowerCase().includes(m.name.toLowerCase()) ||
+      m.name.toLowerCase().includes(name.toLowerCase())
+    );
+    const alert = muni ? alertMap.get(muni.slug) : undefined;
+    const level = alert?.alertLevel.level ?? 'verde';
+    const color = alertColors[level] || '#374151';
+    const cuencaColor = getCuencaColor(name);
+
+    return {
+      color: alert ? color : cuencaColor,
+      weight: alert && level !== 'verde' ? 2 : 1,
+      opacity: alert && level !== 'verde' ? 0.8 : 0.4,
+      fillColor: alert ? color : cuencaColor,
+      fillOpacity: alert && level !== 'verde' ? 0.15 : 0.05,
+    };
+  }, [alertMap]);
+
+  // Style for river lines
+  const riverStyle = useCallback(() => ({
+    color: '#38bdf8',
+    weight: 1.5,
+    opacity: 0.6,
+  }), []);
+
+  // Filter stations data for typed usage
+  const stations = stationsData as Array<{
+    name: string;
+    code: string;
+    type: string;
+    lat: number;
+    lon: number;
+    municipality: string;
+    active: boolean;
+    elevation: number | null;
+  }>;
 
   return (
     <div className="h-full w-full relative" style={{ minHeight: '400px' }}>
       <MapLegend />
+      <LayerControl layers={layers} onToggle={toggleLayer} />
 
-      {/* Layer toggle */}
+      {/* Base layer toggle */}
       <div className="absolute top-3 right-3 z-[1000] flex gap-1 rounded-lg border border-zinc-700 bg-zinc-900/90 backdrop-blur p-1">
         <button
           onClick={() => setUseSatellite(true)}
           className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
-            useSatellite
-              ? 'bg-blue-600 text-white'
-              : 'text-zinc-400 hover:text-zinc-200'
+            useSatellite ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-zinc-200'
           }`}
         >
           Satélite
@@ -89,9 +168,7 @@ export default function MapView({ alerts }: MapViewProps) {
         <button
           onClick={() => setUseSatellite(false)}
           className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
-            !useSatellite
-              ? 'bg-blue-600 text-white'
-              : 'text-zinc-400 hover:text-zinc-200'
+            !useSatellite ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-zinc-200'
           }`}
         >
           Mapa
@@ -123,8 +200,77 @@ export default function MapView({ alerts }: MapViewProps) {
           <TileLayer url={DARK_TILES} attribution={DARK_ATTR} />
         )}
 
-        {/* Municipality markers */}
-        {municipalities.map((muni) => {
+        {/* Municipality boundary polygons */}
+        {isVisible('boundaries') && (
+          <GeoJSON
+            key="boundaries"
+            data={boundariesData as GeoJSON.FeatureCollection}
+            style={boundaryStyle}
+            onEachFeature={(feature, layer) => {
+              const name = feature.properties?.shapeName || 'Desconocido';
+              const muni = municipalities.find(m =>
+                name.toLowerCase().includes(m.name.toLowerCase()) ||
+                m.name.toLowerCase().includes(name.toLowerCase())
+              );
+              if (muni) {
+                layer.bindTooltip(muni.name, {
+                  permanent: false,
+                  direction: 'center',
+                  className: 'boundary-tooltip',
+                });
+              }
+            }}
+          />
+        )}
+
+        {/* River network */}
+        {isVisible('rivers') && (
+          <GeoJSON
+            key="rivers"
+            data={riversData as GeoJSON.FeatureCollection}
+            style={riverStyle}
+            onEachFeature={(feature, layer) => {
+              const name = feature.properties?.name;
+              if (name) {
+                layer.bindTooltip(name, {
+                  permanent: false,
+                  direction: 'auto',
+                  className: 'river-tooltip',
+                });
+              }
+            }}
+          />
+        )}
+
+        {/* IDEAM stations */}
+        {isVisible('stations') && stations.map((station) => (
+          <Marker
+            key={station.code}
+            position={[station.lat, station.lon]}
+            icon={createStationIcon(station.active)}
+          >
+            <Popup className="sat-popup">
+              <div className="min-w-[160px]">
+                <h4 className="font-bold text-xs mb-1">{station.name}</h4>
+                <div className="text-[11px] space-y-0.5">
+                  <div>Tipo: {station.type}</div>
+                  <div>Código: {station.code}</div>
+                  <div>Municipio: {station.municipality}</div>
+                  <div className="flex items-center gap-1">
+                    Estado:
+                    <span className={station.active ? 'text-green-400' : 'text-zinc-500'}>
+                      {station.active ? 'Activa' : 'Inactiva'}
+                    </span>
+                  </div>
+                  {station.elevation && <div>Elevación: {station.elevation}m</div>}
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+
+        {/* Municipality alert markers */}
+        {isVisible('alerts') && municipalities.map((muni) => {
           const alert = alertMap.get(muni.slug);
           const level = alert?.alertLevel.level ?? 'verde';
           const alertData = alert ? alertLevels[alert.alertLevel.level] : alertLevels.verde;
@@ -136,29 +282,34 @@ export default function MapView({ alerts }: MapViewProps) {
               icon={createAlertIcon(level, muni.priority)}
             >
               <Popup className="sat-popup">
-                <div className="min-w-[180px]">
+                <div className="min-w-[200px]">
                   <h4 className="font-bold text-sm mb-1">{muni.name}</h4>
                   <div className="space-y-1 text-xs">
                     <div className="flex items-center gap-1">
                       <span
-                        className="inline-block h-2 w-2 rounded-full"
+                        className="inline-block h-2.5 w-2.5 rounded-full"
                         style={{ background: alertData.color }}
                       />
                       <span className="font-medium">{alertData.label}</span>
                     </div>
                     {alert && (
                       <>
-                        <div>Precip. 24h: {formatNumber(alert.precipitationForecast24h, 1)} mm</div>
-                        <div>Caudal: {formatNumber(alert.riverDischarge, 1)} m³/s</div>
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 mt-1">
+                          <span className="text-zinc-400">Precip. 24h</span>
+                          <span className="font-medium">{formatNumber(alert.precipitationForecast24h, 1)} mm</span>
+                          <span className="text-zinc-400">Caudal</span>
+                          <span className="font-medium">{formatNumber(alert.riverDischarge, 1)} m³/s</span>
+                        </div>
                       </>
                     )}
-                    <div className="text-zinc-500">Cuenca: {muni.cuenca}</div>
+                    <div className="text-zinc-500 mt-1">Cuenca: {muni.cuenca}</div>
                     <div className="text-zinc-500">Población: {formatNumber(muni.population || 0)}</div>
+                    <div className="text-zinc-500">Prioridad: {muni.priority}</div>
                     <Link
                       href={`/municipio/${muni.slug}`}
-                      className="inline-block mt-1 text-blue-400 hover:text-blue-300 underline"
+                      className="inline-block mt-1.5 px-2 py-0.5 rounded bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition-colors"
                     >
-                      Ver detalle
+                      Ver detalle →
                     </Link>
                   </div>
                 </div>
@@ -168,7 +319,7 @@ export default function MapView({ alerts }: MapViewProps) {
         })}
 
         {/* Monitoring points */}
-        {monitoringPoints.map((point) => (
+        {isVisible('monitoring') && monitoringPoints.map((point) => (
           <Marker
             key={point.name}
             position={[point.lat, point.lon]}

@@ -76,14 +76,28 @@ export default function MapLegend() {
               </div>
             </div>
 
-            {/* Monitoring points */}
+            {/* Map layers */}
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Puntos de monitoreo</p>
-              <div className="flex items-center gap-2">
-                <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-blue-600 shrink-0">
-                  <span className="text-white text-[8px]">M</span>
-                </span>
-                <span className="text-[11px] text-zinc-300">Estación / Embalse</span>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Capas</p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="h-0.5 w-4 bg-sky-400 shrink-0 rounded" />
+                  <span className="text-[11px] text-zinc-300">Red hídrica</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-4 rounded-sm bg-blue-500/20 border border-blue-500/40 shrink-0" />
+                  <span className="text-[11px] text-zinc-300">Límites municipales</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-blue-600 shrink-0">
+                    <span className="text-white text-[8px]">M</span>
+                  </span>
+                  <span className="text-[11px] text-zinc-300">Punto de monitoreo</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[11px] text-zinc-300">Estación IDEAM</span>
+                </div>
               </div>
             </div>
           </div>

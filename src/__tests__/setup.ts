@@ -36,15 +36,19 @@ vi.mock('next/dynamic', () => ({
 vi.mock('react-leaflet', () => {
   const React = require('react');
   return {
-    MapContainer: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
-      React.createElement('div', { 'data-testid': 'map', ...props }, children),
+    MapContainer: ({ children, center, zoom, zoomControl, maxBounds, minZoom, maxZoom, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'map', style: props.style as React.CSSProperties }, children),
     TileLayer: (props: { url: string; [key: string]: unknown }) =>
       React.createElement('div', { 'data-testid': 'tile-layer', 'data-url': props.url }),
-    Marker: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
-      React.createElement('div', { 'data-testid': 'marker', ...props }, children),
-    Popup: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
-      React.createElement('div', { 'data-testid': 'popup', ...props }, children),
+    Marker: ({ children, position, icon, ...props }: { children?: React.ReactNode; position?: unknown; icon?: unknown; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'marker' }, children),
+    Popup: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'popup', className }, children),
     ZoomControl: () => React.createElement('div', { 'data-testid': 'zoom-control' }),
+    GeoJSON: ({ data, style, onEachFeature, ...props }: { data: unknown; style?: unknown; onEachFeature?: unknown; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'geojson' }),
+    CircleMarker: ({ children, center, radius, ...props }: { children?: React.ReactNode; center?: unknown; radius?: unknown; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'circle-marker' }, children),
     useMap: () => ({
       fitBounds: vi.fn(),
       setView: vi.fn(),

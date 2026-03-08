@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X, Clock, History, MapPin, Waves } from 'lucide-react';
+import { Shield, Menu, X, Clock, History, MapPin, Waves, BarChart3 } from 'lucide-react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,6 +52,9 @@ export default function Header() {
         <Link href="/historico" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><History size={14} /> Histórico</span>
         </Link>
+        <Link href="/ejecutivo" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
+          <span className="flex items-center gap-1.5"><BarChart3 size={14} /> Ejecutivo</span>
+        </Link>
       </nav>
 
       <div className="flex items-center gap-3">
@@ -81,6 +84,9 @@ export default function Header() {
             </Link>
             <Link href="/historico" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Análisis Histórico
+            </Link>
+            <Link href="/ejecutivo" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
+              Panel Ejecutivo
             </Link>
           </nav>
         </div>

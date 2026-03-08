@@ -48,9 +48,14 @@ describe('MapLegend', () => {
     expect(screen.getByText('Canalete')).toBeInTheDocument();
   });
 
-  it('should show monitoring points section', () => {
+  it('should show map layers section', () => {
     render(<MapLegend />);
-    expect(screen.getByText('Puntos de monitoreo')).toBeInTheDocument();
+    expect(screen.getByText('Capas')).toBeInTheDocument();
+  });
+
+  it('should show monitoring point in layers', () => {
+    render(<MapLegend />);
+    expect(screen.getByText('Punto de monitoreo')).toBeInTheDocument();
   });
 
   it('should be collapsible', () => {

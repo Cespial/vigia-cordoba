@@ -5,6 +5,17 @@ import type { MunicipalAlert } from '@/types';
 import { alertLevels } from '@/data/thresholds';
 import { municipalities } from '@/data/municipalities';
 
+// Mock JSON data imports
+vi.mock('@/data/cordoba-boundaries.json', () => ({
+  default: { type: 'FeatureCollection', features: [] },
+}));
+vi.mock('@/data/cordoba-rivers.json', () => ({
+  default: { type: 'FeatureCollection', features: [] },
+}));
+vi.mock('@/data/ideam-stations.json', () => ({
+  default: [],
+}));
+
 const mockAlerts: MunicipalAlert[] = [
   {
     municipality: municipalities[0],
@@ -66,7 +77,6 @@ describe('MapView', () => {
     render(<MapView alerts={mockAlerts} />);
     const mapBtn = screen.getByText('Mapa');
     fireEvent.click(mapBtn);
-    // After clicking "Mapa", it should change the tile layer
     const tileLayers = screen.getAllByTestId('tile-layer');
     const hasCartoDB = tileLayers.some(t => t.getAttribute('data-url')?.includes('carto'));
     expect(hasCartoDB).toBe(true);
@@ -92,7 +102,59 @@ describe('MapView', () => {
 
   it('should show "Ver detalle" links', () => {
     render(<MapView alerts={mockAlerts} />);
-    const links = screen.getAllByText('Ver detalle');
+    const links = screen.getAllByText(/Ver detalle/);
     expect(links.length).toBeGreaterThan(0);
+  });
+
+  it('should render GeoJSON layers for boundaries and rivers', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const geojsonLayers = screen.getAllByTestId('geojson');
+    expect(geojsonLayers.length).toBe(2); // boundaries + rivers
+  });
+
+  it('should show layer control button', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const capasElements = screen.getAllByText('Capas');
+    expect(capasElements.length).toBeGreaterThan(0);
+  });
+
+  it('should show layer options when layer control is clicked', () => {
+    render(<MapView alerts={mockAlerts} />);
+    // Click any button that contains "Capas" text
+    const capasElements = screen.getAllByText('Capas');
+    // Click each until we find the one that expands the layer panel
+    for (const el of capasElements) {
+      const btn = el.closest('button') || el;
+      fireEvent.click(btn);
+    }
+    expect(screen.getByText('Alertas municipales')).toBeInTheDocument();
+  });
+
+  it('should display precipitation data in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const precElements = screen.getAllByText(/45/);
+    expect(precElements.length).toBeGreaterThan(0);
+  });
+
+  it('should display river discharge in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    expect(screen.getByText(/800/)).toBeInTheDocument();
+  });
+
+  it('should show cuenca info in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const cuencaElements = screen.getAllByText(/Sinú Media/);
+    expect(cuencaElements.length).toBeGreaterThan(0);
+  });
+
+  it('should show population in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    expect(screen.getByText(/505\.000/)).toBeInTheDocument();
+  });
+
+  it('should show priority in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const altas = screen.getAllByText(/Alta/);
+    expect(altas.length).toBeGreaterThan(0);
   });
 });
