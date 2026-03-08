@@ -18,6 +18,7 @@ import {
   Phone, Map, Radio, Home as HomeIcon
 } from 'lucide-react';
 import { recommendations, emergencyContacts } from '@/data/recommendations';
+import MunicipalIndicators from '@/components/municipality/MunicipalIndicators';
 
 export default function MunicipioPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -180,6 +181,14 @@ export default function MunicipioPage({ params }: { params: Promise<{ slug: stri
             lat={municipality.lat}
             lon={municipality.lon}
             title={`Caudal — ${municipality.name}`}
+          />
+        </div>
+
+        {/* Municipal indicators */}
+        <div className="mb-6">
+          <MunicipalIndicators
+            municipalityName={municipality.name}
+            municipalitySlug={municipality.slug}
           />
         </div>
 
