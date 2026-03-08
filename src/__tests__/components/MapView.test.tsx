@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import MapView from '@/components/map/MapView';
 import type { MunicipalAlert } from '@/types';
 import { alertLevels } from '@/data/thresholds';
 import { municipalities } from '@/data/municipalities';
@@ -22,39 +23,27 @@ const mockAlerts: MunicipalAlert[] = [
 ];
 
 describe('MapView', () => {
-  let MapView: typeof import('@/components/map/MapView').default;
-
-  beforeAll(async () => {
-    process.env.NEXT_PUBLIC_MAPBOX_TOKEN = 'test-token';
-    // Clear module cache and re-import with token set
-    vi.resetModules();
-    const mod = await import('@/components/map/MapView');
-    MapView = mod.default;
-  });
-
-  afterAll(() => {
-    delete process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-  });
-
-  it('should render without crashing', () => {
+  it('should render the map container', () => {
     render(<MapView alerts={mockAlerts} />);
     expect(screen.getByTestId('map')).toBeInTheDocument();
   });
 
-  it('should render markers for municipalities', () => {
+  it('should render markers for municipalities and monitoring points', () => {
     render(<MapView alerts={mockAlerts} />);
     const markers = screen.getAllByTestId('marker');
+    // 30 municipalities + 4 monitoring points = 34
     expect(markers.length).toBe(34);
   });
 
-  it('should render navigation control', () => {
+  it('should render tile layers', () => {
     render(<MapView alerts={mockAlerts} />);
-    expect(screen.getByTestId('nav-control')).toBeInTheDocument();
+    const tileLayers = screen.getAllByTestId('tile-layer');
+    expect(tileLayers.length).toBeGreaterThan(0);
   });
 
-  it('should render scale control', () => {
+  it('should render zoom control', () => {
     render(<MapView alerts={mockAlerts} />);
-    expect(screen.getByTestId('scale-control')).toBeInTheDocument();
+    expect(screen.getByTestId('zoom-control')).toBeInTheDocument();
   });
 
   it('should render with empty alerts', () => {
@@ -62,26 +51,48 @@ describe('MapView', () => {
     expect(screen.getByTestId('map')).toBeInTheDocument();
   });
 
-  it('should call onSelectMunicipality when provided', () => {
-    const onSelect = vi.fn();
-    render(<MapView alerts={mockAlerts} onSelectMunicipality={onSelect} />);
-    expect(screen.getByTestId('map')).toBeInTheDocument();
+  it('should render the legend', () => {
+    render(<MapView alerts={mockAlerts} />);
+    expect(screen.getByText('Leyenda')).toBeInTheDocument();
+  });
+
+  it('should show satellite/map toggle', () => {
+    render(<MapView alerts={mockAlerts} />);
+    expect(screen.getByText('Satélite')).toBeInTheDocument();
+    expect(screen.getByText('Mapa')).toBeInTheDocument();
+  });
+
+  it('should toggle between satellite and map view', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const mapBtn = screen.getByText('Mapa');
+    fireEvent.click(mapBtn);
+    // After clicking "Mapa", it should change the tile layer
+    const tileLayers = screen.getAllByTestId('tile-layer');
+    const hasCartoDB = tileLayers.some(t => t.getAttribute('data-url')?.includes('carto'));
+    expect(hasCartoDB).toBe(true);
+  });
+
+  it('should render popups with municipality info', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const popups = screen.getAllByTestId('popup');
+    expect(popups.length).toBeGreaterThan(0);
+  });
+
+  it('should show municipality names in popups', () => {
+    render(<MapView alerts={mockAlerts} />);
+    expect(screen.getByText('Montería')).toBeInTheDocument();
   });
 
   it('should render monitoring point markers', () => {
     render(<MapView alerts={[]} />);
     const markers = screen.getAllByTestId('marker');
+    // At least 4 monitoring points
     expect(markers.length).toBeGreaterThanOrEqual(4);
   });
-});
 
-describe('MapView without token', () => {
-  it('should show missing token message', async () => {
-    delete process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    vi.resetModules();
-    const mod = await import('@/components/map/MapView');
-    const MapViewNoToken = mod.default;
-    render(<MapViewNoToken alerts={[]} />);
-    expect(screen.getByText(/Token de Mapbox no configurado/)).toBeInTheDocument();
+  it('should show "Ver detalle" links', () => {
+    render(<MapView alerts={mockAlerts} />);
+    const links = screen.getAllByText('Ver detalle');
+    expect(links.length).toBeGreaterThan(0);
   });
 });

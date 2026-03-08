@@ -32,34 +32,40 @@ vi.mock('next/dynamic', () => ({
   },
 }));
 
-// Mock mapbox-gl
-vi.mock('mapbox-gl', () => ({
-  default: {
-    Map: vi.fn(),
-    Marker: vi.fn(),
-    NavigationControl: vi.fn(),
-    ScaleControl: vi.fn(),
-  },
-  Map: vi.fn(),
-}));
-
-// Mock react-map-gl/mapbox
-vi.mock('react-map-gl/mapbox', () => {
+// Mock react-leaflet
+vi.mock('react-leaflet', () => {
   const React = require('react');
   return {
-    default: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
+    MapContainer: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
       React.createElement('div', { 'data-testid': 'map', ...props }, children),
+    TileLayer: (props: { url: string; [key: string]: unknown }) =>
+      React.createElement('div', { 'data-testid': 'tile-layer', 'data-url': props.url }),
     Marker: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
       React.createElement('div', { 'data-testid': 'marker', ...props }, children),
     Popup: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) =>
       React.createElement('div', { 'data-testid': 'popup', ...props }, children),
-    NavigationControl: () => React.createElement('div', { 'data-testid': 'nav-control' }),
-    ScaleControl: () => React.createElement('div', { 'data-testid': 'scale-control' }),
+    ZoomControl: () => React.createElement('div', { 'data-testid': 'zoom-control' }),
+    useMap: () => ({
+      fitBounds: vi.fn(),
+      setView: vi.fn(),
+    }),
   };
 });
 
-// Mock mapbox CSS
-vi.mock('mapbox-gl/dist/mapbox-gl.css', () => ({}));
+// Mock leaflet
+vi.mock('leaflet', () => ({
+  default: {
+    divIcon: vi.fn().mockReturnValue({}),
+    icon: vi.fn().mockReturnValue({}),
+    latLng: vi.fn(),
+    map: vi.fn(),
+  },
+  divIcon: vi.fn().mockReturnValue({}),
+  icon: vi.fn().mockReturnValue({}),
+}));
+
+// Mock leaflet CSS
+vi.mock('leaflet/dist/leaflet.css', () => ({}));
 
 // Mock fetch globally
 global.fetch = vi.fn();
