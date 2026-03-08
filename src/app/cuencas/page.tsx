@@ -9,8 +9,28 @@ import { useAlerts } from '@/lib/hooks';
 import { cuencas, municipalities } from '@/data/municipalities';
 import { formatNumber } from '@/lib/utils';
 import Link from 'next/link';
-import { Droplets, Users, MapPin, Activity, ChevronRight } from 'lucide-react';
+import { Droplets, Users, MapPin, Activity, ChevronRight, Beef, GraduationCap, TrendingDown } from 'lucide-react';
 import type { MunicipalAlert } from '@/types';
+import nbiData from '@/data/nbi-data.json';
+import livestockData from '@/data/livestock-data.json';
+import educationData from '@/data/education-institutions.json';
+
+type NBIRecord = { municipality: string; nbi_total: number };
+type LivestockRecord = { municipality: string; cattle_heads: number };
+type EduRecord = { municipality: string; count: number };
+
+function normalize(name: string): string {
+  return name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z\s]/g, '')
+    .trim();
+}
+
+function matchMuni(recordMuni: string, targetName: string): boolean {
+  const a = normalize(recordMuni);
+  const b = normalize(targetName);
+  return a.includes(b) || b.includes(a) || a === b;
+}
 
 const levelOrder = { rojo: 0, naranja: 1, amarillo: 2, verde: 3 };
 
@@ -36,6 +56,26 @@ export default function CuencasPage() {
 
       const totalPop = munis.reduce((s, m) => s + (m.population || 0), 0);
 
+      // NBI average across cuenca municipalities
+      const nbiRecords = munis
+        .map(m => (nbiData as NBIRecord[]).find(n => matchMuni(n.municipality, m.name)))
+        .filter(Boolean) as NBIRecord[];
+      const avgNBI = nbiRecords.length
+        ? nbiRecords.reduce((s, n) => s + n.nbi_total, 0) / nbiRecords.length
+        : 0;
+
+      // Total cattle in cuenca
+      const totalCattle = munis.reduce((s, m) => {
+        const rec = (livestockData as LivestockRecord[]).find(l => matchMuni(l.municipality, m.name));
+        return s + (rec?.cattle_heads ?? 0);
+      }, 0);
+
+      // Total education institutions in cuenca
+      const totalEdu = munis.reduce((s, m) => {
+        const rec = (educationData as EduRecord[]).find(e => matchMuni(e.municipality, m.name));
+        return s + (rec?.count ?? 0);
+      }, 0);
+
       return {
         ...cuenca,
         municipalities: munis,
@@ -44,6 +84,9 @@ export default function CuencasPage() {
         avgPrecip,
         maxDischarge,
         totalPop,
+        avgNBI,
+        totalCattle,
+        totalEdu,
       };
     });
   }, [alerts]);
@@ -92,6 +135,18 @@ export default function CuencasPage() {
                   <div className="flex items-center gap-1.5 text-xs text-zinc-400">
                     <Activity size={12} />
                     <span>{formatNumber(c.maxDischarge, 1)} m³/s máx.</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                    <TrendingDown size={12} />
+                    <span>NBI {c.avgNBI.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                    <Beef size={12} />
+                    <span>{formatNumber(c.totalCattle)} cabezas</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-400 col-span-2">
+                    <GraduationCap size={12} />
+                    <span>{formatNumber(c.totalEdu)} sedes educativas</span>
                   </div>
                 </div>
 
