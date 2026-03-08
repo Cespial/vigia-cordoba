@@ -31,11 +31,13 @@ export default function Home() {
         </div>
 
         {/* Map */}
-        <div className="flex-1 relative">
-          <MapView alerts={alerts} />
+        <div className="flex-1 relative min-h-0">
+          <div className="absolute inset-0">
+            <MapView alerts={alerts} />
+          </div>
 
           {/* Mobile bottom sheet summary */}
-          <div className="md:hidden absolute bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur border-t border-zinc-700 p-3">
+          <div className="md:hidden absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/95 backdrop-blur border-t border-zinc-700 p-3">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-3">
                 {['rojo', 'naranja', 'amarillo', 'verde'].map(level => {

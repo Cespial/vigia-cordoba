@@ -28,6 +28,7 @@ interface PopupInfo {
 export default function MapView({ alerts, onSelectMunicipality }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
+  const [mapError, setMapError] = useState(false);
 
   const alertMap = new Map(alerts.map(a => [a.municipality.slug, a]));
 
@@ -35,8 +36,30 @@ export default function MapView({ alerts, onSelectMunicipality }: MapViewProps) 
     onSelectMunicipality?.(slug);
   }, [onSelectMunicipality]);
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-zinc-900">
+        <div className="text-center p-6">
+          <p className="text-zinc-400 text-sm">Token de Mapbox no configurado.</p>
+          <p className="text-zinc-500 text-xs mt-1">Configura NEXT_PUBLIC_MAPBOX_TOKEN en las variables de entorno.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (mapError) {
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-zinc-900">
+        <div className="text-center p-6">
+          <p className="text-zinc-400 text-sm">Error al cargar el mapa.</p>
+          <button onClick={() => setMapError(false)} className="mt-2 text-blue-400 text-xs hover:underline">Reintentar</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full w-full relative">
+    <div className="h-full w-full relative" style={{ minHeight: '400px' }}>
       <MapGL
         ref={mapRef}
         initialViewState={{
