@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import AlertsSummary from './AlertsSummary';
 import MunicipalityList from './MunicipalityList';
 import PrecipitationChart from '@/components/charts/PrecipitationChart';
@@ -8,15 +8,30 @@ import FloodChart from '@/components/charts/FloodChart';
 import type { MunicipalAlert } from '@/types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+const levelOrder = { rojo: 0, naranja: 1, amarillo: 2, verde: 3 };
+
 interface SidebarProps {
   alerts: MunicipalAlert[];
   loading: boolean;
-  selectedLat?: number;
-  selectedLon?: number;
 }
 
-export default function Sidebar({ alerts, loading, selectedLat = 8.75, selectedLon = -75.8833 }: SidebarProps) {
+export default function Sidebar({ alerts, loading }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+
+  // Show charts for the most critical municipality (or Montería by default)
+  const focusMuni = useMemo(() => {
+    if (alerts.length === 0) return { name: 'Montería', lat: 8.75, lon: -75.8833 };
+    const sorted = [...alerts].sort((a, b) =>
+      levelOrder[a.alertLevel.level] - levelOrder[b.alertLevel.level]
+    );
+    // Pick most severe; if all verde, use Montería
+    const mostSevere = sorted[0];
+    if (mostSevere.alertLevel.level === 'verde') {
+      const monteria = alerts.find(a => a.municipality.slug === 'monteria');
+      if (monteria) return { name: monteria.municipality.name, lat: monteria.municipality.lat, lon: monteria.municipality.lon };
+    }
+    return { name: mostSevere.municipality.name, lat: mostSevere.municipality.lat, lon: mostSevere.municipality.lon };
+  }, [alerts]);
 
   return (
     <div className={`relative flex flex-col transition-all duration-300 ${collapsed ? 'w-0 overflow-hidden' : 'w-[380px]'}`}>
@@ -29,8 +44,8 @@ export default function Sidebar({ alerts, loading, selectedLat = 8.75, selectedL
 
       <div className="flex flex-col gap-4 overflow-y-auto p-4 h-full">
         <AlertsSummary alerts={alerts} loading={loading} />
-        <PrecipitationChart lat={selectedLat} lon={selectedLon} title="Precipitación — Montería" />
-        <FloodChart lat={selectedLat} lon={selectedLon} title="Caudal Río Sinú — Montería" />
+        <PrecipitationChart lat={focusMuni.lat} lon={focusMuni.lon} title={`Precipitación — ${focusMuni.name}`} />
+        <FloodChart lat={focusMuni.lat} lon={focusMuni.lon} title={`Caudal — ${focusMuni.name}`} />
         <MunicipalityList alerts={alerts} loading={loading} />
       </div>
     </div>
