@@ -9,8 +9,11 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
-import { AlertTriangle, Calendar, Users, Home as HomeIcon, Wheat } from 'lucide-react';
+import { AlertTriangle, Calendar, Users, Home as HomeIcon, Wheat, Thermometer, TrendingUp } from 'lucide-react';
 import type { Emergency } from '@/types';
+import ensoData from '@/data/enso-oni.json';
+
+type ENSORecord = { year: number; season: string; total: number; anomaly: number };
 
 const COLORS = ['#3b82f6', '#06b6d4', '#8b5cf6', '#f59e0b', '#ef4444', '#22c55e', '#ec4899', '#6366f1'];
 
@@ -94,6 +97,46 @@ export default function HistoricoPage() {
     });
     return { eventos: filtered.length, personas, familias, viviendas };
   }, [filtered]);
+
+  // ENSO correlation: average ONI per year + event count
+  const ensoCorrelation = useMemo(() => {
+    const oniByYear: Record<number, number[]> = {};
+    (ensoData as ENSORecord[]).forEach(d => {
+      if (!oniByYear[d.year]) oniByYear[d.year] = [];
+      oniByYear[d.year].push(d.anomaly);
+    });
+
+    const eventsByYear: Record<string, number> = {};
+    emergencias.forEach(e => {
+      if (e.fecha) {
+        const y = e.fecha.substring(0, 4);
+        eventsByYear[y] = (eventsByYear[y] || 0) + 1;
+      }
+    });
+
+    const allYears = new Set([
+      ...Object.keys(oniByYear).map(String),
+      ...Object.keys(eventsByYear),
+    ]);
+
+    return Array.from(allYears)
+      .sort()
+      .map(year => {
+        const oniValues = oniByYear[Number(year)] || [];
+        const avgOni = oniValues.length ? oniValues.reduce((s, v) => s + v, 0) / oniValues.length : 0;
+        let phase: 'La Niña' | 'El Niño' | 'Neutro' = 'Neutro';
+        if (avgOni <= -0.5) phase = 'La Niña';
+        else if (avgOni >= 0.5) phase = 'El Niño';
+        return {
+          year,
+          events: eventsByYear[year] || 0,
+          avgOni: parseFloat(avgOni.toFixed(2)),
+          phase,
+          phaseColor: phase === 'La Niña' ? '#3b82f6' : phase === 'El Niño' ? '#ef4444' : '#71717a',
+        };
+      })
+      .filter(d => d.events > 0 || d.avgOni !== 0);
+  }, [emergencias]);
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
@@ -251,6 +294,67 @@ export default function HistoricoPage() {
                 </ResponsiveContainer>
               </div>
             </Card>
+
+            {/* ENSO Correlation */}
+            {ensoCorrelation.length > 0 && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>
+                    <span className="flex items-center gap-2">
+                      <Thermometer size={16} className="text-orange-400" />
+                      Correlación ENSO — Emergencias
+                    </span>
+                  </CardTitle>
+                  <span className="text-xs text-zinc-500">Eventos de inundación vs. fase ENSO por año</span>
+                </CardHeader>
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={ensoCorrelation} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                      <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#9ca3af' }} />
+                      <YAxis yAxisId="events" tick={{ fontSize: 11, fill: '#9ca3af' }} />
+                      <YAxis yAxisId="oni" orientation="right" tick={{ fontSize: 11, fill: '#9ca3af' }} domain={[-2, 3]} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', fontSize: 12, color: '#e5e7eb' }}
+                        formatter={(value, name) => {
+                          const v = Number(value);
+                          if (name === 'Eventos') return [v, name];
+                          return [`${v > 0 ? '+' : ''}${v.toFixed(2)}°C`, 'ONI'];
+                        }}
+                      />
+                      <Bar yAxisId="events" dataKey="events" name="Eventos" radius={[4, 4, 0, 0]}>
+                        {ensoCorrelation.map((d, i) => (
+                          <Cell key={i} fill={d.phaseColor} opacity={0.7} />
+                        ))}
+                      </Bar>
+                      <Bar yAxisId="oni" dataKey="avgOni" name="ONI" radius={[4, 4, 0, 0]}>
+                        {ensoCorrelation.map((d, i) => (
+                          <Cell key={i} fill={d.avgOni <= -0.5 ? '#60a5fa' : d.avgOni >= 0.5 ? '#f87171' : '#a1a1aa'} opacity={0.4} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex items-center gap-4 mt-3 text-[10px] text-zinc-500">
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block" /> La Niña (más lluvias)</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block" /> El Niño (menos lluvias)</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-zinc-500 inline-block" /> Neutro</span>
+                </div>
+                {(() => {
+                  const ninaCounts = ensoCorrelation.filter(d => d.phase === 'La Niña');
+                  const ninoNeutral = ensoCorrelation.filter(d => d.phase !== 'La Niña');
+                  const avgNina = ninaCounts.length ? ninaCounts.reduce((s, d) => s + d.events, 0) / ninaCounts.length : 0;
+                  const avgOther = ninoNeutral.length ? ninoNeutral.reduce((s, d) => s + d.events, 0) / ninoNeutral.length : 0;
+                  const ratio = avgOther > 0 ? (avgNina / avgOther).toFixed(1) : '—';
+                  return avgNina > avgOther ? (
+                    <div className="mt-2 text-xs text-blue-400 flex items-center gap-1.5">
+                      <TrendingUp size={12} />
+                      En años La Niña se registran en promedio {ratio}x más emergencias que en años neutros/El Niño
+                    </div>
+                  ) : null;
+                })()}
+              </Card>
+            )}
 
             {/* Events table */}
             <Card>
