@@ -14,12 +14,12 @@ describe('Header', () => {
 
   it('should render the app name', () => {
     render(<Header />);
-    expect(screen.getByText('Vigía Córdoba')).toBeInTheDocument();
+    expect(screen.getByText('SAT Córdoba')).toBeInTheDocument();
   });
 
   it('should render the subtitle', () => {
     render(<Header />);
-    expect(screen.getByText('Sistema de Alertas Tempranas')).toBeInTheDocument();
+    expect(screen.getByText(/Sistema de Alertas Tempranas/)).toBeInTheDocument();
   });
 
   it('should render Mapa navigation link', () => {
@@ -34,7 +34,7 @@ describe('Header', () => {
 
   it('should have a link to home', () => {
     render(<Header />);
-    const homeLink = screen.getByText('Vigía Córdoba').closest('a');
+    const homeLink = screen.getByText('SAT Córdoba').closest('a');
     expect(homeLink).toHaveAttribute('href', '/');
   });
 

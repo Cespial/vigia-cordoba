@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vigía Córdoba — Sistema de Alertas Tempranas",
+  title: "SAT Córdoba — Sistema de Alertas Tempranas",
   description: "Dashboard de monitoreo en tiempo real para gestión del riesgo por inundaciones en el departamento de Córdoba, Colombia. Integra datos hidrometeorológicos, satelitales y de emergencias.",
-  keywords: ["Córdoba", "Colombia", "inundaciones", "alertas tempranas", "río Sinú", "gestión del riesgo", "SAT"],
+  keywords: ["Córdoba", "Colombia", "inundaciones", "alertas tempranas", "río Sinú", "río San Jorge", "gestión del riesgo", "SAT", "IDEAM"],
   openGraph: {
-    title: "Vigía Córdoba — Sistema de Alertas Tempranas",
-    description: "Monitoreo en tiempo real del riesgo por inundaciones en Córdoba, Colombia",
+    title: "SAT Córdoba — Sistema de Alertas Tempranas",
+    description: "Monitoreo en tiempo real del riesgo por inundaciones en el Departamento de Córdoba, Colombia",
     type: "website",
   },
 };

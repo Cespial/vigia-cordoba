@@ -21,41 +21,33 @@ async function fetchFloodForPoint(lat: number, lon: number) {
 
 export async function GET() {
   try {
-    // Fetch data for priority municipalities (limit to avoid rate limits)
-    const priorityMunicipalities = municipalities.filter(m => m.priority === 'Alta' || m.priority === 'Media');
+    // Fetch data for all municipalities in batches to avoid rate limits
+    const batchSize = 10;
+    const allAlerts: MunicipalAlert[] = [];
 
-    const alerts: MunicipalAlert[] = await Promise.all(
-      priorityMunicipalities.map(async (muni) => {
-        const [weather, flood] = await Promise.all([
-          fetchWeatherForPoint(muni.lat, muni.lon).catch(() => null),
-          fetchFloodForPoint(muni.lat, muni.lon).catch(() => null),
-        ]);
+    for (let i = 0; i < municipalities.length; i += batchSize) {
+      const batch = municipalities.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(async (muni) => {
+          const [weather, flood] = await Promise.all([
+            fetchWeatherForPoint(muni.lat, muni.lon).catch(() => null),
+            fetchFloodForPoint(muni.lat, muni.lon).catch(() => null),
+          ]);
 
-        const precip = weather?.daily?.precipitation_sum?.[1] ?? weather?.daily?.precipitation_sum?.[0] ?? 0;
-        const discharge = flood?.daily?.river_discharge?.[1] ?? flood?.daily?.river_discharge?.[0] ?? 0;
+          const precip = weather?.daily?.precipitation_sum?.[1] ?? weather?.daily?.precipitation_sum?.[0] ?? 0;
+          const discharge = flood?.daily?.river_discharge?.[1] ?? flood?.daily?.river_discharge?.[0] ?? 0;
 
-        return {
-          municipality: muni,
-          alertLevel: getCombinedAlert(precip, discharge),
-          precipitationForecast24h: precip,
-          riverDischarge: discharge,
-          lastUpdate: new Date().toISOString(),
-        };
-      })
-    );
-
-    // Add remaining municipalities with default verde
-    const remainingMunicipalities = municipalities.filter(m => m.priority === 'Baja');
-    const allAlerts = [
-      ...alerts,
-      ...remainingMunicipalities.map(muni => ({
-        municipality: muni,
-        alertLevel: getCombinedAlert(0, 0),
-        precipitationForecast24h: 0,
-        riverDischarge: 0,
-        lastUpdate: new Date().toISOString(),
-      })),
-    ];
+          return {
+            municipality: muni,
+            alertLevel: getCombinedAlert(precip, discharge),
+            precipitationForecast24h: precip,
+            riverDischarge: discharge,
+            lastUpdate: new Date().toISOString(),
+          };
+        })
+      );
+      allAlerts.push(...batchResults);
+    }
 
     return NextResponse.json(allAlerts, {
       headers: { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=900' },

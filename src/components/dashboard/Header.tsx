@@ -32,10 +32,10 @@ export default function Header() {
           </div>
           <div>
             <h1 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-              Vigía Córdoba
+              SAT Córdoba
             </h1>
             <p className="text-[10px] text-zinc-400 leading-tight">
-              Sistema de Alertas Tempranas
+              Sistema de Alertas Tempranas — Dpto. de Córdoba
             </p>
           </div>
         </Link>

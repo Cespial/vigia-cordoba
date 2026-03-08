@@ -8,6 +8,7 @@ import { AlertDot } from '@/components/ui/AlertBadge';
 import type { MunicipalAlert } from '@/types';
 import { formatNumber } from '@/lib/utils';
 import { Droplets, Activity, Radio } from 'lucide-react';
+import MapLegend from './MapLegend';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -60,6 +61,7 @@ export default function MapView({ alerts, onSelectMunicipality }: MapViewProps) 
 
   return (
     <div className="h-full w-full relative" style={{ minHeight: '400px' }}>
+      <MapLegend />
       <MapGL
         ref={mapRef}
         initialViewState={{
