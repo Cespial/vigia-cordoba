@@ -50,14 +50,24 @@ describe('Header', () => {
     expect(screen.getByText(/COT/)).toBeInTheDocument();
   });
 
+  it('should render Cuencas navigation link', () => {
+    render(<Header />);
+    expect(screen.getAllByText('Cuencas').length).toBeGreaterThan(0);
+  });
+
   it('should toggle mobile menu', () => {
     render(<Header />);
-    // Initially mobile menu content should not be visible (it's in the hidden desktop nav)
     const menuButton = screen.getByRole('button');
     fireEvent.click(menuButton);
-    // After click, mobile nav should appear
     const mobileLinks = screen.getAllByText('Análisis Histórico');
     expect(mobileLinks.length).toBeGreaterThan(0);
+  });
+
+  it('should show cuencas in mobile menu', () => {
+    render(<Header />);
+    const menuButton = screen.getByRole('button');
+    fireEvent.click(menuButton);
+    expect(screen.getByText('Cuencas Hidrográficas')).toBeInTheDocument();
   });
 
   it('should close mobile menu when link is clicked', () => {
@@ -66,8 +76,6 @@ describe('Header', () => {
     fireEvent.click(menuButton);
     const mobileLink = screen.getByText('Análisis Histórico');
     fireEvent.click(mobileLink);
-    // Menu should close — the mobile menu div should disappear
-    // We verify by checking the menu button toggles state
   });
 
   it('should have a shield icon in the logo', () => {

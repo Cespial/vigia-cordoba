@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X, Clock, History, MapPin } from 'lucide-react';
+import { Shield, Menu, X, Clock, History, MapPin, Waves } from 'lucide-react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,6 +46,9 @@ export default function Header() {
         <Link href="/" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><MapPin size={14} /> Mapa</span>
         </Link>
+        <Link href="/cuencas" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
+          <span className="flex items-center gap-1.5"><Waves size={14} /> Cuencas</span>
+        </Link>
         <Link href="/historico" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><History size={14} /> Histórico</span>
         </Link>
@@ -72,6 +75,9 @@ export default function Header() {
           <nav className="flex flex-col gap-2">
             <Link href="/" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Mapa en Tiempo Real
+            </Link>
+            <Link href="/cuencas" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
+              Cuencas Hidrográficas
             </Link>
             <Link href="/historico" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Análisis Histórico
