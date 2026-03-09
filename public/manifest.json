@@ -1,0 +1,17 @@
+{
+  "name": "SAT Córdoba — Sistema de Alertas Tempranas",
+  "short_name": "SAT Córdoba",
+  "description": "Sistema de Alertas Tempranas para riesgo de inundaciones en Córdoba, Colombia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
