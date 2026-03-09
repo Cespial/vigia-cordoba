@@ -63,6 +63,43 @@ vi.mock('@/components/charts/EmergencyHistory', () => ({
   },
 }));
 
+vi.mock('@/data/ideam-stations.json', () => ({
+  default: [
+    { municipality: 'MONTERIA', active: true },
+    { municipality: 'MONTERIA', active: true },
+    { municipality: 'MONTERIA', active: false },
+    { municipality: 'LORICA', active: true },
+  ],
+}));
+
+vi.mock('@/data/nbi-data.json', () => ({
+  default: [
+    { municipality: 'Montería', nbi_total: 44.8 },
+    { municipality: 'Lorica', nbi_total: 62.5 },
+  ],
+}));
+
+vi.mock('@/data/livestock-data.json', () => ({
+  default: [
+    { municipality: 'Montería', cattle_heads: 350000 },
+    { municipality: 'Lorica', cattle_heads: 125000 },
+  ],
+}));
+
+vi.mock('@/data/education-institutions.json', () => ({
+  default: [
+    { municipality: 'Montería', count: 450 },
+    { municipality: 'Lorica', count: 180 },
+  ],
+}));
+
+vi.mock('@/data/health-institutions.json', () => ({
+  default: [
+    { municipality: 'MONTERÍA', total: 320 },
+    { municipality: 'LORICA', total: 45 },
+  ],
+}));
+
 import EjecutivoPage from '@/app/ejecutivo/page';
 
 describe('Ejecutivo Page - Empty state', () => {
@@ -142,11 +179,15 @@ describe('Ejecutivo Page - With alerts', () => {
     expect(screen.getByText('Análisis por Cuenca Hidrográfica')).toBeInTheDocument();
   });
 
-  it('should show infrastructure stats', () => {
+  it('should show capacity and exposure section', () => {
     render(<EjecutivoPage />);
-    expect(screen.getByText('Infraestructura de Monitoreo')).toBeInTheDocument();
-    expect(screen.getByText('229')).toBeInTheDocument();
-    expect(screen.getByText('30')).toBeInTheDocument();
+    expect(screen.getByText('Capacidad y Exposición Departamental')).toBeInTheDocument();
+    expect(screen.getByText('Estaciones IDEAM')).toBeInTheDocument();
+    expect(screen.getByText('Estaciones activas')).toBeInTheDocument();
+    expect(screen.getByText('NBI Promedio')).toBeInTheDocument();
+    expect(screen.getByText('Cabezas ganado')).toBeInTheDocument();
+    expect(screen.getByText('Sedes educativas')).toBeInTheDocument();
+    expect(screen.getByText('Centros de salud')).toBeInTheDocument();
   });
 
   it('should show data source tags', () => {
@@ -155,6 +196,7 @@ describe('Ejecutivo Page - With alerts', () => {
     expect(screen.getByText('IDEAM')).toBeInTheDocument();
     expect(screen.getByText('UNGRD')).toBeInTheDocument();
     expect(screen.getByText('NOAA')).toBeInTheDocument();
+    expect(screen.getByText('DANE')).toBeInTheDocument();
   });
 
   it('should show ENSO component', () => {

@@ -15,8 +15,19 @@ import FloodChart from '@/components/charts/FloodChart';
 import Link from 'next/link';
 import {
   Shield, Users, Droplets, Activity, AlertTriangle,
-  MapPin, TrendingUp, Building2
+  MapPin, TrendingUp, Building2, GraduationCap, Beef, TrendingDown, Hospital
 } from 'lucide-react';
+import stationsData from '@/data/ideam-stations.json';
+import nbiData from '@/data/nbi-data.json';
+import livestockData from '@/data/livestock-data.json';
+import educationData from '@/data/education-institutions.json';
+import healthData from '@/data/health-institutions.json';
+
+type StationRecord = { municipality: string; active: boolean };
+type NBIRecord = { municipality: string; nbi_total: number };
+type LivestockRecord = { municipality: string; cattle_heads: number };
+type EduRecord = { municipality: string; count: number };
+type HealthRecord = { municipality: string; total: number };
 
 const levelColors: Record<string, string> = {
   rojo: '#ef4444', naranja: '#f97316', amarillo: '#eab308', verde: '#22c55e'
@@ -334,36 +345,75 @@ export default function EjecutivoPage() {
                 <CardTitle>
                   <span className="flex items-center gap-2">
                     <Building2 size={14} className="text-purple-400" />
-                    Infraestructura de Monitoreo
+                    Capacidad y Exposición Departamental
                   </span>
                 </CardTitle>
               </CardHeader>
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-lg border border-zinc-700 p-3 text-center">
-                    <div className="text-2xl font-bold text-zinc-100">229</div>
-                    <div className="text-[10px] text-zinc-500">Estaciones IDEAM</div>
-                  </div>
-                  <div className="rounded-lg border border-zinc-700 p-3 text-center">
-                    <div className="text-2xl font-bold text-emerald-400">100</div>
-                    <div className="text-[10px] text-zinc-500">Estaciones activas</div>
-                  </div>
-                  <div className="rounded-lg border border-zinc-700 p-3 text-center">
-                    <div className="text-2xl font-bold text-zinc-100">30</div>
-                    <div className="text-[10px] text-zinc-500">Municipios monitoreados</div>
-                  </div>
-                  <div className="rounded-lg border border-zinc-700 p-3 text-center">
-                    <div className="text-2xl font-bold text-zinc-100">6</div>
-                    <div className="text-[10px] text-zinc-500">Cuencas hidrográficas</div>
-                  </div>
-                </div>
+                {(() => {
+                  const stations = stationsData as StationRecord[];
+                  const totalStations = stations.length;
+                  const activeStations = stations.filter(s => s.active).length;
+                  const nbi = nbiData as NBIRecord[];
+                  const avgNBI = nbi.length ? nbi.reduce((s, n) => s + n.nbi_total, 0) / nbi.length : 0;
+                  const totalCattle = (livestockData as LivestockRecord[]).reduce((s, l) => s + l.cattle_heads, 0);
+                  const totalEdu = (educationData as EduRecord[]).reduce((s, e) => s + e.count, 0);
+                  const totalHealth = (healthData as HealthRecord[]).reduce((s, h) => s + h.total, 0);
+
+                  return (
+                    <>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
+                          <div className="text-lg font-bold text-zinc-100">{totalStations}</div>
+                          <div className="text-[10px] text-zinc-500">Estaciones IDEAM</div>
+                        </div>
+                        <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
+                          <div className="text-lg font-bold text-emerald-400">{activeStations}</div>
+                          <div className="text-[10px] text-zinc-500">Estaciones activas</div>
+                        </div>
+                        <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
+                          <div className="text-lg font-bold text-zinc-100">{cuencas.length}</div>
+                          <div className="text-[10px] text-zinc-500">Cuencas</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="rounded-lg border border-zinc-700 p-2.5">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <TrendingDown size={12} className="text-amber-400" />
+                            <span className="text-[10px] text-zinc-500">NBI Promedio</span>
+                          </div>
+                          <div className="text-lg font-bold text-amber-400">{avgNBI.toFixed(1)}%</div>
+                        </div>
+                        <div className="rounded-lg border border-zinc-700 p-2.5">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Beef size={12} className="text-green-400" />
+                            <span className="text-[10px] text-zinc-500">Cabezas ganado</span>
+                          </div>
+                          <div className="text-lg font-bold text-zinc-100">{formatNumber(totalCattle)}</div>
+                        </div>
+                        <div className="rounded-lg border border-zinc-700 p-2.5">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <GraduationCap size={12} className="text-indigo-400" />
+                            <span className="text-[10px] text-zinc-500">Sedes educativas</span>
+                          </div>
+                          <div className="text-lg font-bold text-zinc-100">{formatNumber(totalEdu)}</div>
+                        </div>
+                        <div className="rounded-lg border border-zinc-700 p-2.5">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Hospital size={12} className="text-red-400" />
+                            <span className="text-[10px] text-zinc-500">Centros de salud</span>
+                          </div>
+                          <div className="text-lg font-bold text-zinc-100">{formatNumber(totalHealth)}</div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
                 <div className="text-xs text-zinc-500 leading-relaxed">
-                  Datos integrados de Open-Meteo (pronóstico meteorológico), GloFAS (caudales),
-                  IDEAM (estaciones hidrometeorológicas), UNGRD (emergencias históricas),
-                  NOAA (índice ENSO/ONI), y datos.gov.co (datos abiertos del gobierno).
+                  Datos integrados de Open-Meteo, GloFAS, IDEAM, UNGRD, NOAA, DANE, datos.gov.co y OSM.
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {['Open-Meteo', 'GloFAS', 'IDEAM', 'UNGRD', 'NOAA', 'Esri', 'OSM'].map(src => (
+                  {['Open-Meteo', 'GloFAS', 'IDEAM', 'UNGRD', 'NOAA', 'DANE', 'Esri', 'OSM'].map(src => (
                     <span key={src} className="text-[10px] px-2 py-0.5 rounded-full border border-zinc-700 text-zinc-400">
                       {src}
                     </span>
