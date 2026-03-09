@@ -5,7 +5,11 @@ import { alertLevels } from '@/data/thresholds';
 import { cuencas } from '@/data/municipalities';
 import { ChevronDown, ChevronUp, Layers } from 'lucide-react';
 
-export default function MapLegend() {
+interface MapLegendProps {
+  showRiskLegend?: boolean;
+}
+
+export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -39,6 +43,29 @@ export default function MapLegend() {
                 ))}
               </div>
             </div>
+
+            {/* Composite risk scores */}
+            {showRiskLegend && (
+              <div>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Riesgo Compuesto</p>
+                <div className="space-y-1">
+                  {[
+                    { label: 'Critico (70+)', color: '#ef4444' },
+                    { label: 'Alto (50-69)', color: '#f97316' },
+                    { label: 'Moderado (30-49)', color: '#eab308' },
+                    { label: 'Bajo (<30)', color: '#22c55e' },
+                  ].map(item => (
+                    <div key={item.label} className="flex items-center gap-2">
+                      <span
+                        className="h-2.5 w-4 rounded-sm shrink-0"
+                        style={{ backgroundColor: item.color, opacity: 0.7 }}
+                      />
+                      <span className="text-[11px] text-zinc-300">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Marker sizes */}
             <div>

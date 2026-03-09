@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X, Clock, History, MapPin, Waves, BarChart3 } from 'lucide-react';
+import { Shield, Menu, X, Clock, History, MapPin, Waves, BarChart3, Scale, FileText } from 'lucide-react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,6 +55,12 @@ export default function Header() {
         <Link href="/ejecutivo" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><BarChart3 size={14} /> Ejecutivo</span>
         </Link>
+        <Link href="/comparador" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
+          <span className="flex items-center gap-1.5"><Scale size={14} /> Comparador</span>
+        </Link>
+        <Link href="/reporte" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
+          <span className="flex items-center gap-1.5"><FileText size={14} /> Reporte</span>
+        </Link>
       </nav>
 
       <div className="flex items-center gap-3">
@@ -87,6 +93,9 @@ export default function Header() {
             </Link>
             <Link href="/ejecutivo" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Panel Ejecutivo
+            </Link>
+            <Link href="/comparador" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
+              Comparador
             </Link>
           </nav>
         </div>

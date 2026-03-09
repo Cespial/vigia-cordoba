@@ -16,7 +16,7 @@ import FloodChart from '@/components/charts/FloodChart';
 import Link from 'next/link';
 import {
   Shield, Users, Droplets, Activity, AlertTriangle,
-  MapPin, TrendingUp, Building2, GraduationCap, Beef, TrendingDown, Hospital
+  MapPin, TrendingUp, Building2, GraduationCap, Beef, TrendingDown, Hospital, FileText
 } from 'lucide-react';
 import stationsData from '@/data/ideam-stations.json';
 import nbiData from '@/data/nbi-data.json';
@@ -143,10 +143,19 @@ export default function EjecutivoPage() {
                 Resumen de situación — Departamento de Córdoba
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-xs text-zinc-500">Última actualización</div>
-              <div className="text-sm text-zinc-300">
-                {new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'medium', timeStyle: 'short' })}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/reporte"
+                className="flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-700/50 hover:text-zinc-100 transition-colors"
+              >
+                <FileText size={14} />
+                Generar Reporte
+              </Link>
+              <div className="text-right">
+                <div className="text-xs text-zinc-500">Última actualización</div>
+                <div className="text-sm text-zinc-300">
+                  {new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'medium', timeStyle: 'short' })}
+                </div>
               </div>
             </div>
           </div>

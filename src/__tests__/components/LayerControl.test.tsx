@@ -7,6 +7,7 @@ const mockLayers: MapLayer[] = [
   { id: 'rivers', label: 'Red hídrica', color: '#38bdf8', visible: true },
   { id: 'stations', label: 'Estaciones IDEAM', color: '#10b981', visible: false },
   { id: 'alerts', label: 'Alertas municipales', color: '#f97316', visible: true },
+  { id: 'risk', label: 'Riesgo', color: '#a855f7', visible: false },
 ];
 
 describe('LayerControl', () => {
@@ -22,6 +23,7 @@ describe('LayerControl', () => {
     expect(screen.getByText('Red hídrica')).toBeInTheDocument();
     expect(screen.getByText('Estaciones IDEAM')).toBeInTheDocument();
     expect(screen.getByText('Alertas municipales')).toBeInTheDocument();
+    expect(screen.getByText('Riesgo')).toBeInTheDocument();
   });
 
   it('should call onToggle when a layer is clicked', () => {
@@ -56,8 +58,16 @@ describe('LayerControl', () => {
     render(<LayerControl layers={mockLayers} onToggle={vi.fn()} />);
     fireEvent.click(screen.getByText('Capas'));
     const buttons = screen.getAllByRole('button');
-    // 1 toggle button + 4 layer buttons
-    expect(buttons.length).toBe(5);
+    // 1 toggle button + 5 layer buttons
+    expect(buttons.length).toBe(6);
+  });
+
+  it('should call onToggle when risk layer is clicked', () => {
+    const onToggle = vi.fn();
+    render(<LayerControl layers={mockLayers} onToggle={onToggle} />);
+    fireEvent.click(screen.getByText('Capas'));
+    fireEvent.click(screen.getByText('Riesgo'));
+    expect(onToggle).toHaveBeenCalledWith('risk');
   });
 
   it('should show color indicators for layers', () => {

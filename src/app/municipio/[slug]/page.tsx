@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/dashboard/Header';
 import PrecipitationChart from '@/components/charts/PrecipitationChart';
 import FloodChart from '@/components/charts/FloodChart';
+import ExtendedForecast from '@/components/charts/ExtendedForecast';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { AlertBadge } from '@/components/ui/AlertBadge';
 import { municipalities } from '@/data/municipalities';
@@ -181,6 +182,15 @@ export default function MunicipioPage({ params }: { params: Promise<{ slug: stri
             lat={municipality.lat}
             lon={municipality.lon}
             title={`Caudal — ${municipality.name}`}
+          />
+        </div>
+
+        {/* Extended forecast */}
+        <div className="mb-6">
+          <ExtendedForecast
+            lat={municipality.lat}
+            lon={municipality.lon}
+            title={`Pronóstico Extendido — ${municipality.name}`}
           />
         </div>
 

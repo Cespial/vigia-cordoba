@@ -8,6 +8,7 @@ import { municipalities, monitoringPoints, CORDOBA_BOUNDS, cuencas } from '@/dat
 import type { MunicipalAlert } from '@/types';
 import { formatNumber } from '@/lib/utils';
 import { alertLevels } from '@/data/thresholds';
+import { computeRiskScores, getRiskColor, getRiskLabel } from '@/lib/risk-score';
 import MapLegend from './MapLegend';
 import LayerControl, { type MapLayer } from './LayerControl';
 import Link from 'next/link';
@@ -100,15 +101,21 @@ export default function MapView({ alerts }: MapViewProps) {
     { id: 'stations', label: 'Estaciones IDEAM', color: '#10b981', visible: false },
     { id: 'alerts', label: 'Alertas municipales', color: '#f97316', visible: true },
     { id: 'monitoring', label: 'Puntos monitoreo', color: '#2563eb', visible: true },
+    { id: 'risk', label: 'Riesgo', color: '#a855f7', visible: false },
   ]);
 
   const alertMap = useMemo(() => new Map(alerts.map(a => [a.municipality.slug, a])), [alerts]);
+
+  const riskScores = useMemo(() => computeRiskScores(alerts), [alerts]);
+  const riskMap = useMemo(() => new Map(riskScores.map(r => [r.slug, r])), [riskScores]);
 
   const toggleLayer = useCallback((layerId: string) => {
     setLayers(prev => prev.map(l => l.id === layerId ? { ...l, visible: !l.visible } : l));
   }, []);
 
   const isVisible = useCallback((id: string) => layers.find(l => l.id === id)?.visible ?? true, [layers]);
+
+  const riskLayerActive = isVisible('risk');
 
   // Style for municipality boundaries
   const boundaryStyle = useCallback((feature: GeoJSON.Feature | undefined) => {
@@ -117,6 +124,21 @@ export default function MapView({ alerts }: MapViewProps) {
       name.toLowerCase().includes(m.name.toLowerCase()) ||
       m.name.toLowerCase().includes(name.toLowerCase())
     );
+
+    // Risk layer mode
+    if (riskLayerActive && muni) {
+      const risk = riskMap.get(muni.slug);
+      const riskColor = risk ? getRiskColor(risk.score) : '#374151';
+      return {
+        color: riskColor,
+        weight: 2,
+        opacity: 0.8,
+        fillColor: riskColor,
+        fillOpacity: 0.25,
+      };
+    }
+
+    // Default alert-based coloring
     const alert = muni ? alertMap.get(muni.slug) : undefined;
     const level = alert?.alertLevel.level ?? 'verde';
     const color = alertColors[level] || '#374151';
@@ -129,7 +151,7 @@ export default function MapView({ alerts }: MapViewProps) {
       fillColor: alert ? color : cuencaColor,
       fillOpacity: alert && level !== 'verde' ? 0.15 : 0.05,
     };
-  }, [alertMap]);
+  }, [alertMap, riskLayerActive, riskMap]);
 
   // Style for river lines
   const riverStyle = useCallback(() => ({
@@ -152,7 +174,7 @@ export default function MapView({ alerts }: MapViewProps) {
 
   return (
     <div className="h-full w-full relative" style={{ minHeight: '400px' }}>
-      <MapLegend />
+      <MapLegend showRiskLegend={riskLayerActive} />
       <LayerControl layers={layers} onToggle={toggleLayer} />
 
       {/* Base layer toggle */}
@@ -203,7 +225,7 @@ export default function MapView({ alerts }: MapViewProps) {
         {/* Municipality boundary polygons */}
         {isVisible('boundaries') && (
           <GeoJSON
-            key="boundaries"
+            key={`boundaries-${riskLayerActive ? 'risk' : 'alert'}`}
             data={boundariesData as GeoJSON.FeatureCollection}
             style={boundaryStyle}
             onEachFeature={(feature, layer) => {
@@ -213,11 +235,25 @@ export default function MapView({ alerts }: MapViewProps) {
                 m.name.toLowerCase().includes(name.toLowerCase())
               );
               if (muni) {
-                layer.bindTooltip(muni.name, {
-                  permanent: false,
-                  direction: 'center',
-                  className: 'boundary-tooltip',
-                });
+                if (riskLayerActive) {
+                  const risk = riskMap.get(muni.slug);
+                  const score = risk?.score ?? 0;
+                  const label = getRiskLabel(score);
+                  layer.bindTooltip(
+                    `<strong>${muni.name}</strong><br/>Riesgo: ${score} (${label})`,
+                    {
+                      permanent: false,
+                      direction: 'center',
+                      className: 'boundary-tooltip',
+                    }
+                  );
+                } else {
+                  layer.bindTooltip(muni.name, {
+                    permanent: false,
+                    direction: 'center',
+                    className: 'boundary-tooltip',
+                  });
+                }
               }
             }}
           />
