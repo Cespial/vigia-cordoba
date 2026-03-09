@@ -100,6 +100,13 @@ vi.mock('@/data/health-institutions.json', () => ({
   ],
 }));
 
+vi.mock('@/data/ungrd-emergencies.json', () => ({
+  default: [
+    { municipality: 'MONTERIA', affected: 2500 },
+    { municipality: 'LORICA', affected: 1800 },
+  ],
+}));
+
 import EjecutivoPage from '@/app/ejecutivo/page';
 
 describe('Ejecutivo Page - Empty state', () => {
@@ -197,6 +204,11 @@ describe('Ejecutivo Page - With alerts', () => {
     expect(screen.getByText('UNGRD')).toBeInTheDocument();
     expect(screen.getByText('NOAA')).toBeInTheDocument();
     expect(screen.getByText('DANE')).toBeInTheDocument();
+  });
+
+  it('should show risk index', () => {
+    render(<EjecutivoPage />);
+    expect(screen.getByText('Índice de Riesgo Compuesto')).toBeInTheDocument();
   });
 
   it('should show ENSO component', () => {

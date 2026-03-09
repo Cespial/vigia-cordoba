@@ -10,6 +10,7 @@ import { municipalities, cuencas } from '@/data/municipalities';
 import { alertLevels } from '@/data/thresholds';
 import ENSOIndicator from '@/components/charts/ENSOIndicator';
 import EmergencyHistory from '@/components/charts/EmergencyHistory';
+import RiskIndex from '@/components/dashboard/RiskIndex';
 import PrecipitationChart from '@/components/charts/PrecipitationChart';
 import FloodChart from '@/components/charts/FloodChart';
 import Link from 'next/link';
@@ -321,6 +322,9 @@ export default function EjecutivoPage() {
               </div>
             </Card>
           </div>
+
+          {/* Risk Index */}
+          <RiskIndex alerts={alerts} />
 
           {/* Charts row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
