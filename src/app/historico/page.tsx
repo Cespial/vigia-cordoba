@@ -12,6 +12,30 @@ import {
 import { AlertTriangle, Calendar, Users, Home as HomeIcon, Wheat, Thermometer, TrendingUp } from 'lucide-react';
 import type { Emergency } from '@/types';
 import ensoData from '@/data/enso-oni.json';
+import localEmergencies from '@/data/ungrd-emergencies.json';
+
+type LocalRecord = {
+  date: string;
+  municipality: string;
+  event_type: string;
+  deaths: number;
+  injuries: number;
+  affected: number;
+  destroyed_homes: number;
+  damaged_homes: number;
+};
+
+function transformLocal(records: LocalRecord[]): Emergency[] {
+  return records.map(r => ({
+    fecha: r.date,
+    departamento: 'CÓRDOBA',
+    municipio: r.municipality,
+    tipo_evento: r.event_type,
+    personas_afectadas: r.affected,
+    familias_afectadas: Math.round(r.affected / 4),
+    viviendas_afectadas: r.destroyed_homes + r.damaged_homes,
+  }));
+}
 
 type ENSORecord = { year: number; season: string; total: number; anomaly: number };
 
@@ -29,9 +53,17 @@ export default function HistoricoPage() {
     fetch('/api/emergencias?limit=2000')
       .then(r => r.json())
       .then(data => {
-        if (Array.isArray(data)) setEmergencias(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setEmergencias(data);
+        } else {
+          // API returned empty or error object — use local data
+          setEmergencias(transformLocal(localEmergencies as LocalRecord[]));
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        // API failed — use local data as fallback
+        setEmergencias(transformLocal(localEmergencies as LocalRecord[]));
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -305,7 +337,7 @@ export default function HistoricoPage() {
                       Correlación ENSO — Emergencias
                     </span>
                   </CardTitle>
-                  <span className="text-xs text-zinc-500">Eventos de inundación vs. fase ENSO por año</span>
+                  <span className="text-xs text-zinc-400">Eventos de inundación vs. fase ENSO por año</span>
                 </CardHeader>
                 <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
@@ -387,7 +419,7 @@ export default function HistoricoPage() {
                 </table>
                 {filtered.length > PAGE_SIZE && (
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-800">
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-zinc-400">
                       {tablePage * PAGE_SIZE + 1}–{Math.min((tablePage + 1) * PAGE_SIZE, filtered.length)} de {filtered.length} registros
                     </p>
                     <div className="flex items-center gap-2">

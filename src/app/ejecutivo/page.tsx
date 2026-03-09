@@ -216,7 +216,7 @@ export default function EjecutivoPage() {
               </Link>
               <div className="text-right">
                 <div className="flex items-center gap-2">
-                  <div className="text-xs text-zinc-500">Última actualización</div>
+                  <div className="text-xs text-zinc-400">Última actualización</div>
                   <span className="flex items-center gap-1 text-[11px] text-zinc-400">
                     <RefreshCw size={10} className="animate-spin" style={{ animationDuration: '3s' }} />
                     Auto-refresh: 5min
@@ -237,7 +237,7 @@ export default function EjecutivoPage() {
                   <Shield size={28} style={{ color: levelColors[analysis.overallLevel] }} />
                 </div>
                 <div>
-                  <div className="text-xs text-zinc-500 uppercase tracking-wider">Estado departamental</div>
+                  <div className="text-xs text-zinc-400 uppercase tracking-wider">Estado departamental</div>
                   <div className="text-2xl font-bold" style={{ color: levelColors[analysis.overallLevel] }}>
                     ALERTA {analysis.overallLevel.toUpperCase()}
                   </div>
@@ -262,10 +262,10 @@ export default function EjecutivoPage() {
             <Card className="!p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Users size={16} className="text-red-400" />
-                <span className="text-xs text-zinc-500">Población alto riesgo</span>
+                <span className="text-xs text-zinc-400">Población alto riesgo</span>
               </div>
               <div className="text-2xl font-bold text-zinc-100">{formatNumber(analysis.popHighRisk)}</div>
-              <div className="text-xs text-zinc-500 mt-1">
+              <div className="text-xs text-zinc-400 mt-1">
                 {((analysis.popHighRisk / analysis.totalPop) * 100).toFixed(1)}% del departamento
               </div>
             </Card>
@@ -273,10 +273,10 @@ export default function EjecutivoPage() {
             <Card className="!p-4">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle size={16} className="text-orange-400" />
-                <span className="text-xs text-zinc-500">Población en riesgo</span>
+                <span className="text-xs text-zinc-400">Población en riesgo</span>
               </div>
               <div className="text-2xl font-bold text-zinc-100">{formatNumber(analysis.popAtRisk)}</div>
-              <div className="text-xs text-zinc-500 mt-1">
+              <div className="text-xs text-zinc-400 mt-1">
                 {((analysis.popAtRisk / analysis.totalPop) * 100).toFixed(1)}% del departamento
               </div>
             </Card>
@@ -284,19 +284,19 @@ export default function EjecutivoPage() {
             <Card className="!p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Droplets size={16} className="text-blue-400" />
-                <span className="text-xs text-zinc-500">Precipitación máx.</span>
+                <span className="text-xs text-zinc-400">Precipitación máx.</span>
               </div>
               <div className="text-2xl font-bold text-zinc-100">{formatNumber(analysis.maxPrecip, 1)} mm</div>
-              <div className="text-xs text-zinc-500 mt-1 truncate">{analysis.maxPrecipMuni}</div>
+              <div className="text-xs text-zinc-400 mt-1 truncate">{analysis.maxPrecipMuni}</div>
             </Card>
 
             <Card className="!p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Activity size={16} className="text-cyan-400" />
-                <span className="text-xs text-zinc-500">Caudal máximo</span>
+                <span className="text-xs text-zinc-400">Caudal máximo</span>
               </div>
               <div className="text-2xl font-bold text-zinc-100">{formatNumber(analysis.maxDischarge, 1)} m³/s</div>
-              <div className="text-xs text-zinc-500 mt-1 truncate">{analysis.maxDischargeMuni}</div>
+              <div className="text-xs text-zinc-400 mt-1 truncate">{analysis.maxDischargeMuni}</div>
             </Card>
           </div>
 
@@ -512,7 +512,7 @@ export default function EjecutivoPage() {
                     </>
                   );
                 })()}
-                <div className="text-xs text-zinc-500 leading-relaxed">
+                <div className="text-xs text-zinc-400 leading-relaxed">
                   Datos integrados de Open-Meteo, GloFAS, IDEAM, UNGRD, NOAA, DANE, datos.gov.co y OSM.
                 </div>
                 <div className="flex flex-wrap gap-1.5">
