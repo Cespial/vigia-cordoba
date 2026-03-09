@@ -113,19 +113,19 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
             <div className="text-xl font-bold text-zinc-100">
               {indicators.nbi ? `${indicators.nbi.nbi_total.toFixed(1)}%` : '—'}
             </div>
-            <div className="text-[10px] text-zinc-500">NBI Total</div>
+            <div className="text-[11px] text-zinc-400">NBI Total</div>
           </div>
           <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
             <div className="text-xl font-bold text-zinc-100">
               {indicators.nbi ? `${indicators.nbi.nbi_urban.toFixed(1)}%` : '—'}
             </div>
-            <div className="text-[10px] text-zinc-500">NBI Urbano</div>
+            <div className="text-[11px] text-zinc-400">NBI Urbano</div>
           </div>
           <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
             <div className="text-xl font-bold text-zinc-100">
               {indicators.nbi ? `${indicators.nbi.nbi_rural.toFixed(1)}%` : '—'}
             </div>
-            <div className="text-[10px] text-zinc-500">NBI Rural</div>
+            <div className="text-[11px] text-zinc-400">NBI Rural</div>
           </div>
         </div>
         {indicators.nbi && indicators.nbi.nbi_total > 50 && (
@@ -151,13 +151,13 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
           <div className="rounded-lg border border-zinc-700 p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
               <GraduationCap size={13} className="text-indigo-400" />
-              <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Sedes Educativas</span>
+              <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Sedes Educativas</span>
             </div>
             <div className="text-xl font-bold text-zinc-100">
               {indicators.edu ? formatNumber(indicators.edu.count) : '—'}
             </div>
             {indicators.edu && (
-              <div className="text-[10px] text-zinc-500 mt-0.5">
+              <div className="text-[11px] text-zinc-400 mt-0.5">
                 Rural: {indicators.edu.rural} · Urbano: {indicators.edu.urban}
               </div>
             )}
@@ -167,13 +167,13 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
           <div className="rounded-lg border border-zinc-700 p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
               <Hospital size={13} className="text-red-400" />
-              <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Centros de Salud</span>
+              <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Centros de Salud</span>
             </div>
             <div className="text-xl font-bold text-zinc-100">
               {indicators.health ? formatNumber(indicators.health.total) : '—'}
             </div>
             {indicators.health && (
-              <div className="text-[10px] text-zinc-500 mt-0.5">
+              <div className="text-[11px] text-zinc-400 mt-0.5">
                 Hospitales: {indicators.health.hospitals} · Centros: {indicators.health.centers}
               </div>
             )}
@@ -183,13 +183,13 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
           <div className="rounded-lg border border-zinc-700 p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
               <Wheat size={13} className="text-amber-400" />
-              <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Área Agrícola</span>
+              <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Área Agrícola</span>
             </div>
             <div className="text-xl font-bold text-zinc-100">
               {indicators.agri ? `${formatNumber(indicators.agri.total_ha)} ha` : '—'}
             </div>
             {indicators.agri && indicators.agri.main_crops.length > 0 && (
-              <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
+              <div className="text-[11px] text-zinc-400 mt-0.5 truncate">
                 {indicators.agri.main_crops.slice(0, 3).join(', ')}
               </div>
             )}
@@ -199,13 +199,13 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
           <div className="rounded-lg border border-zinc-700 p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
               <Beef size={13} className="text-green-400" />
-              <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Ganadería</span>
+              <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Ganadería</span>
             </div>
             <div className="text-xl font-bold text-zinc-100">
               {indicators.live ? formatNumber(indicators.live.cattle_heads) : '—'}
             </div>
             {indicators.live && (
-              <div className="text-[10px] text-zinc-500 mt-0.5">
+              <div className="text-[11px] text-zinc-400 mt-0.5">
                 cabezas · {formatNumber(indicators.live.area_pasture_ha)} ha pastos
               </div>
             )}
@@ -226,11 +226,11 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
             <div className="text-xl font-bold text-zinc-100">{indicators.stationCount}</div>
-            <div className="text-[10px] text-zinc-500">Estaciones IDEAM</div>
+            <div className="text-[11px] text-zinc-400">Estaciones IDEAM</div>
           </div>
           <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
             <div className="text-xl font-bold text-emerald-400">{indicators.activeStations}</div>
-            <div className="text-[10px] text-zinc-500">Estaciones activas</div>
+            <div className="text-[11px] text-zinc-400">Estaciones activas</div>
           </div>
         </div>
       </Card>
@@ -245,24 +245,24 @@ export default function MunicipalIndicators({ municipalityName, municipalitySlug
                 Historial de Impacto
               </span>
             </CardTitle>
-            <span className="text-[10px] text-zinc-500">Fuente: UNGRD</span>
+            <span className="text-[11px] text-zinc-400">Fuente: UNGRD</span>
           </CardHeader>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
               <div className="text-xl font-bold text-zinc-100">{indicators.emergencyCount}</div>
-              <div className="text-[10px] text-zinc-500">Eventos</div>
+              <div className="text-[11px] text-zinc-400">Eventos</div>
             </div>
             <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
               <div className="text-xl font-bold text-zinc-100">{formatNumber(indicators.totalAffected)}</div>
-              <div className="text-[10px] text-zinc-500">Personas afectadas</div>
+              <div className="text-[11px] text-zinc-400">Personas afectadas</div>
             </div>
             <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
               <div className="text-xl font-bold text-zinc-100">{formatNumber(indicators.totalHomesImpacted)}</div>
-              <div className="text-[10px] text-zinc-500">Viviendas impactadas</div>
+              <div className="text-[11px] text-zinc-400">Viviendas impactadas</div>
             </div>
             <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
               <div className="text-xl font-bold text-red-400">{indicators.totalDeaths}</div>
-              <div className="text-[10px] text-zinc-500">Fallecidos</div>
+              <div className="text-[11px] text-zinc-400">Fallecidos</div>
             </div>
           </div>
         </Card>

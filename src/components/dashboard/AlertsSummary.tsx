@@ -65,7 +65,7 @@ export default function AlertsSummary({ alerts, loading }: AlertsSummaryProps) {
             <AlertDot level={level} />
             <div>
               <div className="text-lg font-bold text-zinc-800 dark:text-zinc-100">{summary.counts[level]}</div>
-              <div className="text-[10px] text-zinc-500">{alertLevels[level].label}</div>
+              <div className="text-[11px] text-zinc-400">{alertLevels[level].label}</div>
             </div>
           </div>
         ))}

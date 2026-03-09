@@ -25,13 +25,13 @@ export default function RiskIndex({ alerts }: RiskIndexProps) {
             Índice de Riesgo Compuesto
           </span>
         </CardTitle>
-        <span className="text-[10px] text-zinc-500">
+        <span className="text-[11px] text-zinc-400">
           Amenaza (40%) + Vulnerabilidad (30%) + Exposición (30%)
         </span>
       </CardHeader>
 
       {/* Column headers */}
-      <div className="flex items-center text-[10px] text-zinc-500 px-2 pb-1.5 border-b border-zinc-800 gap-2">
+      <div className="flex items-center text-[11px] text-zinc-400 px-2 pb-1.5 border-b border-zinc-800 gap-2">
         <span className="w-5 text-right">#</span>
         <span className="flex-1">Municipio</span>
         <span className="w-14 text-center">Riesgo</span>
@@ -56,10 +56,10 @@ export default function RiskIndex({ alerts }: RiskIndexProps) {
               href={`/municipio/${r.slug}`}
               className="flex items-center py-1.5 px-2 rounded hover:bg-zinc-800/50 transition-colors text-xs gap-2 group"
             >
-              <span className="w-5 text-right text-zinc-600 font-mono shrink-0">{i + 1}</span>
+              <span className="w-5 text-right text-zinc-500 font-mono shrink-0">{i + 1}</span>
               <div className="flex-1 min-w-0">
                 <span className="text-zinc-200 font-medium">{r.name}</span>
-                <span className="text-zinc-600 ml-1 hidden sm:inline">{r.cuenca}</span>
+                <span className="text-zinc-500 ml-1 hidden sm:inline">{r.cuenca}</span>
               </div>
               <div className="w-14 flex items-center justify-center gap-1 shrink-0">
                 <div className="w-8 h-2 rounded-full bg-zinc-800 overflow-hidden">
@@ -75,13 +75,13 @@ export default function RiskIndex({ alerts }: RiskIndexProps) {
               <span className="w-12 text-center text-zinc-400 hidden md:block">{r.hazard}</span>
               <span className="w-12 text-center text-zinc-400 hidden md:block">{r.vulnerability}</span>
               <span className="w-12 text-center text-zinc-400 hidden md:block">{r.exposure}</span>
-              <ChevronRight size={12} className="text-zinc-600 group-hover:text-zinc-300 shrink-0 w-4" />
+              <ChevronRight size={12} className="text-zinc-500 group-hover:text-zinc-300 shrink-0 w-4" />
             </Link>
           );
         })}
       </div>
 
-      <div className="mt-3 pt-2 border-t border-zinc-800 flex flex-wrap gap-3 text-[10px] text-zinc-500">
+      <div className="mt-3 pt-2 border-t border-zinc-800 flex flex-wrap gap-3 text-[11px] text-zinc-400">
         <span className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Crítico (70+)
         </span>

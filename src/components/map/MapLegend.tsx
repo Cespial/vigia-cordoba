@@ -30,7 +30,7 @@ export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
           <div className="px-3 pb-3 space-y-3">
             {/* Alert levels */}
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Niveles de alerta</p>
+              <p className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Niveles de alerta</p>
               <div className="space-y-1">
                 {(['rojo', 'naranja', 'amarillo', 'verde'] as const).map(level => (
                   <div key={level} className="flex items-center gap-2">
@@ -47,7 +47,7 @@ export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
             {/* Composite risk scores */}
             {showRiskLegend && (
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Riesgo Compuesto</p>
+                <p className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Riesgo Compuesto</p>
                 <div className="space-y-1">
                   {[
                     { label: 'Critico (70+)', color: '#ef4444' },
@@ -69,7 +69,7 @@ export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
 
             {/* Marker sizes */}
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Prioridad</p>
+              <p className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Prioridad</p>
               <div className="space-y-1">
                 {[
                   { label: 'Alta', size: 14 },
@@ -89,7 +89,7 @@ export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
 
             {/* Cuencas */}
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Cuencas</p>
+              <p className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Cuencas</p>
               <div className="space-y-1">
                 {cuencas.map(c => (
                   <div key={c.name} className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export default function MapLegend({ showRiskLegend = false }: MapLegendProps) {
 
             {/* Map layers */}
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Capas</p>
+              <p className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Capas</p>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="h-0.5 w-4 bg-sky-400 shrink-0 rounded" />

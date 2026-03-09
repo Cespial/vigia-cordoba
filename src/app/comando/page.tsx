@@ -720,7 +720,7 @@ Contacto: sat-cordoba.vercel.app`;
                   </span>
                 </div>
                 <div className="h-px bg-zinc-800" />
-                <p className="text-[11px] text-zinc-600 font-mono">
+                <p className="text-[11px] text-zinc-500 font-mono">
                   Basado en población municipal x factor de exposición por nivel de alerta
                 </p>
               </div>
@@ -775,7 +775,7 @@ Contacto: sat-cordoba.vercel.app`;
                   <p className="text-lg font-black text-zinc-100 font-mono">
                     {formatNumber(impact.educationAtRisk)}
                   </p>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <p className="text-[11px] text-zinc-400 uppercase tracking-wider">
                     Sedes educativas
                   </p>
                 </div>
@@ -784,7 +784,7 @@ Contacto: sat-cordoba.vercel.app`;
                   <p className="text-lg font-black text-zinc-100 font-mono">
                     {formatNumber(impact.healthAtRisk)}
                   </p>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <p className="text-[11px] text-zinc-400 uppercase tracking-wider">
                     Centros de salud
                   </p>
                 </div>
@@ -793,7 +793,7 @@ Contacto: sat-cordoba.vercel.app`;
                   <p className="text-lg font-black text-zinc-100 font-mono">
                     {formatNumber(impact.cattleAtRisk)}
                   </p>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <p className="text-[11px] text-zinc-400 uppercase tracking-wider">
                     Cabezas de ganado
                   </p>
                 </div>
@@ -834,7 +834,7 @@ Contacto: sat-cordoba.vercel.app`;
                   </div>
                 )}
                 <div className="h-px bg-zinc-800" />
-                <p className="text-[11px] text-zinc-600 font-mono">
+                <p className="text-[11px] text-zinc-500 font-mono">
                   Fuente: UNGRD — Municipios actualmente en alerta roja/naranja
                 </p>
               </div>

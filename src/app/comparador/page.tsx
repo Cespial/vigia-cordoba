@@ -179,7 +179,7 @@ export default function ComparadorPage() {
                         isSelected
                           ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                           : isDisabled
-                            ? 'text-zinc-600 cursor-not-allowed'
+                            ? 'text-zinc-500 cursor-not-allowed'
                             : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
                       }`}
                     >
@@ -195,7 +195,7 @@ export default function ComparadorPage() {
           {selected.length < 2 && (
             <div className="flex items-center justify-center py-12 text-zinc-500" data-testid="comparison-prompt">
               <div className="text-center space-y-2">
-                <Scale size={40} className="mx-auto text-zinc-600" />
+                <Scale size={40} className="mx-auto text-zinc-500" />
                 <p className="text-sm">Seleccione al menos 2 municipios para comenzar la comparacion</p>
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Droplets size={12} className="text-blue-400" />
-                            <span className="text-[10px] text-zinc-500">Precipitacion 24h</span>
+                            <span className="text-[11px] text-zinc-400">Precipitacion 24h</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.precipitationForecast24h, 1)} mm
@@ -248,7 +248,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Activity size={12} className="text-cyan-400" />
-                            <span className="text-[10px] text-zinc-500">Caudal</span>
+                            <span className="text-[11px] text-zinc-400">Caudal</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.riverDischarge, 1)} m3/s
@@ -274,7 +274,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Users size={12} className="text-purple-400" />
-                            <span className="text-[10px] text-zinc-500">Poblacion</span>
+                            <span className="text-[11px] text-zinc-400">Poblacion</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.population)}
@@ -283,7 +283,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <TrendingDown size={12} className="text-amber-400" />
-                            <span className="text-[10px] text-zinc-500">NBI</span>
+                            <span className="text-[11px] text-zinc-400">NBI</span>
                           </div>
                           <div className="text-lg font-bold text-amber-400">
                             {c.nbi.toFixed(1)}%
@@ -309,7 +309,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <GraduationCap size={12} className="text-indigo-400" />
-                            <span className="text-[10px] text-zinc-500">Sedes educativas</span>
+                            <span className="text-[11px] text-zinc-400">Sedes educativas</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.educationInstitutions)}
@@ -318,7 +318,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Hospital size={12} className="text-red-400" />
-                            <span className="text-[10px] text-zinc-500">Centros de salud</span>
+                            <span className="text-[11px] text-zinc-400">Centros de salud</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.healthFacilities)}
@@ -327,7 +327,7 @@ export default function ComparadorPage() {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Beef size={12} className="text-green-400" />
-                            <span className="text-[10px] text-zinc-500">Cabezas de ganado</span>
+                            <span className="text-[11px] text-zinc-400">Cabezas de ganado</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">
                             {formatNumber(c.cattleHeads)}
@@ -352,7 +352,7 @@ export default function ComparadorPage() {
                       <div className="text-2xl font-bold text-zinc-100">
                         {c.historicalEmergencies}
                       </div>
-                      <div className="text-[10px] text-zinc-500 mt-1">emergencias registradas</div>
+                      <div className="text-[11px] text-zinc-400 mt-1">emergencias registradas</div>
                     </Card>
                   ))}
                 </div>

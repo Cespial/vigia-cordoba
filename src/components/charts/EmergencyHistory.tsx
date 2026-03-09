@@ -70,32 +70,32 @@ export default function EmergencyHistory() {
             Historial de Emergencias
           </span>
         </CardTitle>
-        <span className="text-[10px] text-zinc-500">Fuente: UNGRD</span>
+        <span className="text-[11px] text-zinc-400">Fuente: UNGRD</span>
       </CardHeader>
 
       {/* Key stats */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="rounded-lg border border-zinc-700 p-2 text-center">
           <div className="text-lg font-bold text-zinc-100">{analysis.totalEvents}</div>
-          <div className="text-[10px] text-zinc-500">Eventos registrados</div>
+          <div className="text-[11px] text-zinc-400">Eventos registrados</div>
         </div>
         <div className="rounded-lg border border-zinc-700 p-2 text-center">
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.totalAffected)}</div>
-          <div className="text-[10px] text-zinc-500">Personas afectadas</div>
+          <div className="text-[11px] text-zinc-400">Personas afectadas</div>
         </div>
         <div className="rounded-lg border border-zinc-700 p-2 text-center">
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.totalDestroyed + analysis.totalDamaged)}</div>
-          <div className="text-[10px] text-zinc-500">Viviendas impactadas</div>
+          <div className="text-[11px] text-zinc-400">Viviendas impactadas</div>
         </div>
         <div className="rounded-lg border border-zinc-700 p-2 text-center">
           <div className="text-lg font-bold text-red-400">{analysis.totalDeaths}</div>
-          <div className="text-[10px] text-zinc-500">Fallecidos</div>
+          <div className="text-[11px] text-zinc-400">Fallecidos</div>
         </div>
       </div>
 
       {/* Yearly chart */}
       <div className="mb-3">
-        <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Eventos por año</div>
+        <div className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Eventos por año</div>
         <div className="flex items-end gap-1 h-12">
           {analysis.yearlyData.map(([year, count]) => (
             <div key={year} className="flex-1 flex flex-col items-center gap-0.5">
@@ -103,7 +103,7 @@ export default function EmergencyHistory() {
                 className="w-full rounded-sm bg-amber-500/60"
                 style={{ height: `${(count / maxYearCount) * 40}px` }}
               />
-              <span className="text-[8px] text-zinc-600">{String(year).slice(-2)}</span>
+              <span className="text-[10px] text-zinc-500">{String(year).slice(-2)}</span>
             </div>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function EmergencyHistory() {
 
       {/* Top municipalities */}
       <div>
-        <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1.5">Municipios más afectados</div>
+        <div className="text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">Municipios más afectados</div>
         <div className="space-y-1">
           {analysis.topMunis.map(([name, count]) => (
             <div key={name} className="flex items-center justify-between text-xs">

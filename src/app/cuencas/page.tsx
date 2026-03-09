@@ -120,32 +120,32 @@ export default function CuencasPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <MapPin size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <MapPin size={12} className="text-zinc-500" />
                     <span>{c.municipalities.length} municipios</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <Users size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <Users size={12} className="text-zinc-500" />
                     <span>{formatNumber(c.totalPop)} hab.</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <Droplets size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <Droplets size={12} className="text-blue-400" />
                     <span>{formatNumber(c.avgPrecip, 1)} mm prom.</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <Activity size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <Activity size={12} className="text-cyan-400" />
                     <span>{formatNumber(c.maxDischarge, 1)} m³/s máx.</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <TrendingDown size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <TrendingDown size={12} className="text-amber-400" />
                     <span>NBI {c.avgNBI.toFixed(1)}%</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                    <Beef size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <Beef size={12} className="text-green-400" />
                     <span>{formatNumber(c.totalCattle)} cabezas</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400 col-span-2">
-                    <GraduationCap size={12} />
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300 col-span-2">
+                    <GraduationCap size={12} className="text-indigo-400" />
                     <span>{formatNumber(c.totalEdu)} sedes educativas</span>
                   </div>
                 </div>

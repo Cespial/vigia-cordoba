@@ -54,17 +54,17 @@ export default function ENSOIndicator() {
       <div className={`rounded-lg border border-zinc-700 p-2.5 ${bg}`}>
         <div className="flex items-center justify-between mb-1">
           <div>
-            <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Fase actual</div>
+            <div className="text-[11px] text-zinc-400 uppercase tracking-wider">Fase actual</div>
             <div className="text-sm font-bold" style={{ color }}>{phase}</div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] text-zinc-500">ONI</div>
+            <div className="text-[11px] text-zinc-400">ONI</div>
             <div className="text-lg font-bold text-zinc-100">
               {analysis.latest.anomaly > 0 ? '+' : ''}{analysis.latest.anomaly.toFixed(2)}°C
             </div>
           </div>
         </div>
-        <div className="text-[10px] text-zinc-500">
+        <div className="text-[11px] text-zinc-400">
           {analysis.latest.year} · {seasonLabels[analysis.latest.season] || analysis.latest.season}
           {analysis.trend > 0 ? ' ↑' : analysis.trend < 0 ? ' ↓' : ' →'}
         </div>
@@ -72,7 +72,7 @@ export default function ENSOIndicator() {
 
       {/* Mini sparkline */}
       <div className="mt-2">
-        <div className="text-[10px] text-zinc-500 mb-1">Últimos 12 trimestres</div>
+        <div className="text-[11px] text-zinc-400 mb-1">Últimos 12 trimestres</div>
         <div className="flex items-end gap-[2px] h-8">
           {analysis.last12.map((d, i) => {
             const { color: barColor } = getENSOPhase(d.anomaly);
@@ -92,13 +92,13 @@ export default function ENSOIndicator() {
             );
           })}
         </div>
-        <div className="flex justify-between text-[9px] text-zinc-600 mt-0.5">
+        <div className="flex justify-between text-[10px] text-zinc-500 mt-0.5">
           <span>{analysis.last12[0]?.year}</span>
           <span>{analysis.last12[analysis.last12.length - 1]?.year}</span>
         </div>
       </div>
 
-      <div className="mt-2 text-[10px] text-zinc-500 leading-relaxed">
+      <div className="mt-2 text-[11px] text-zinc-400 leading-relaxed">
         {phase === 'La Niña' && 'La Niña incrementa precipitaciones en Córdoba. Mayor riesgo de inundaciones.'}
         {phase === 'El Niño' && 'El Niño reduce precipitaciones en Córdoba. Menor riesgo de inundaciones fluviales.'}
         {phase === 'Neutro' && 'Condiciones neutras. Precipitaciones dentro del rango normal esperado.'}

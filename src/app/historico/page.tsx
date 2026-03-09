@@ -335,7 +335,7 @@ export default function HistoricoPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex items-center gap-4 mt-3 text-[10px] text-zinc-500">
+                <div className="flex items-center gap-4 mt-3 text-[11px] text-zinc-400">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block" /> La Niña (más lluvias)</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block" /> El Niño (menos lluvias)</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-zinc-500 inline-block" /> Neutro</span>

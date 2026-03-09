@@ -120,7 +120,7 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
               <Shield size={20} style={{ color: levelColors[analysis.overallLevel] }} />
             </div>
             <div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Nivel departamental</div>
+              <div className="text-[11px] text-zinc-400 uppercase tracking-wider">Nivel departamental</div>
               <div className="text-sm font-bold" style={{ color: levelColors[analysis.overallLevel] }}>
                 ALERTA {levelLabels[analysis.overallLevel]}
               </div>
@@ -128,7 +128,7 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
           </div>
           <div className="text-right">
             <div className="text-lg font-bold text-zinc-100">{analysis.alertsWithRisk}</div>
-            <div className="text-[10px] text-zinc-500">municipios en alerta</div>
+            <div className="text-[11px] text-zinc-400">municipios en alerta</div>
           </div>
         </div>
       </div>
@@ -138,10 +138,10 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
         <Card className="!p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <Users size={12} className="text-red-400" />
-            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Población alto riesgo</span>
+            <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Población alto riesgo</span>
           </div>
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.populationHighRisk)}</div>
-          <div className="text-[10px] text-zinc-500">
+          <div className="text-[11px] text-zinc-400">
             {((analysis.populationHighRisk / analysis.totalPopulation) * 100).toFixed(1)}% del departamento
           </div>
         </Card>
@@ -149,10 +149,10 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
         <Card className="!p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <AlertTriangle size={12} className="text-orange-400" />
-            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Población en riesgo</span>
+            <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Población en riesgo</span>
           </div>
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.populationAtRisk)}</div>
-          <div className="text-[10px] text-zinc-500">
+          <div className="text-[11px] text-zinc-400">
             {((analysis.populationAtRisk / analysis.totalPopulation) * 100).toFixed(1)}% del departamento
           </div>
         </Card>
@@ -160,19 +160,19 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
         <Card className="!p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <Droplets size={12} className="text-blue-400" />
-            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Precip. máxima</span>
+            <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Precip. máxima</span>
           </div>
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.maxPrecip, 1)} mm</div>
-          <div className="text-[10px] text-zinc-500 truncate">{analysis.maxPrecipMuni}</div>
+          <div className="text-[11px] text-zinc-400 truncate">{analysis.maxPrecipMuni}</div>
         </Card>
 
         <Card className="!p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <Activity size={12} className="text-cyan-400" />
-            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Caudal máximo</span>
+            <span className="text-[11px] text-zinc-400 uppercase tracking-wider">Caudal máximo</span>
           </div>
           <div className="text-lg font-bold text-zinc-100">{formatNumber(analysis.maxDischarge, 1)} m³/s</div>
-          <div className="text-[10px] text-zinc-500 truncate">{analysis.maxDischargeMuni}</div>
+          <div className="text-[11px] text-zinc-400 truncate">{analysis.maxDischargeMuni}</div>
         </Card>
       </div>
 
@@ -180,7 +180,7 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
       <Card className="!p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <AlertTriangle size={12} className="text-red-400" />
-          <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">
+          <span className="text-[11px] text-zinc-400 uppercase tracking-wider font-medium">
             Municipios críticos
           </span>
         </div>
@@ -188,7 +188,7 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
           {analysis.criticalMunis.map((a, i) => (
             <div key={a.municipality.slug} className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 min-w-0">
-                <span className="text-zinc-600 w-3 text-right shrink-0">{i + 1}</span>
+                <span className="text-zinc-500 w-3 text-right shrink-0">{i + 1}</span>
                 <span
                   className="h-2 w-2 rounded-full shrink-0"
                   style={{ backgroundColor: levelColors[a.alertLevel.level] }}
@@ -208,7 +208,7 @@ export default function ExecutiveSummary({ alerts }: ExecutiveSummaryProps) {
       <Card className="!p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <Activity size={12} className="text-blue-400" />
-          <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">
+          <span className="text-[11px] text-zinc-400 uppercase tracking-wider font-medium">
             Estado por cuenca
           </span>
         </div>

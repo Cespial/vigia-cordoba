@@ -217,7 +217,7 @@ export default function EjecutivoPage() {
               <div className="text-right">
                 <div className="flex items-center gap-2">
                   <div className="text-xs text-zinc-500">Última actualización</div>
-                  <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+                  <span className="flex items-center gap-1 text-[11px] text-zinc-400">
                     <RefreshCw size={10} className="animate-spin" style={{ animationDuration: '3s' }} />
                     Auto-refresh: 5min
                   </span>
@@ -247,7 +247,7 @@ export default function EjecutivoPage() {
                 {(['rojo', 'naranja', 'amarillo', 'verde'] as const).map(level => (
                   <div key={level} className="text-center">
                     <div className="text-2xl font-bold text-zinc-100">{analysis.counts[level]}</div>
-                    <div className="flex items-center gap-1 text-[10px] text-zinc-500">
+                    <div className="flex items-center gap-1 text-[11px] text-zinc-400">
                       <span className="h-2 w-2 rounded-full" style={{ backgroundColor: levelColors[level] }} />
                       {alertLevels[level].label}
                     </div>
@@ -309,7 +309,7 @@ export default function EjecutivoPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-zinc-200">Impacto Económico Estimado</h3>
-                  <p className="text-[10px] text-zinc-500">Pérdida potencial si no se actúa</p>
+                  <p className="text-[11px] text-zinc-400">Pérdida potencial si no se actúa</p>
                 </div>
               </div>
               <div className="text-3xl font-bold text-amber-400 mb-1">
@@ -341,14 +341,14 @@ export default function EjecutivoPage() {
                     className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-zinc-800/50 transition-colors text-xs"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="text-zinc-600 w-4 text-right shrink-0 font-mono">{i + 1}</span>
+                      <span className="text-zinc-500 w-4 text-right shrink-0 font-mono">{i + 1}</span>
                       <span
                         className="h-2.5 w-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: levelColors[a.alertLevel.level] }}
                       />
                       <div className="min-w-0">
                         <span className="text-zinc-200 font-medium">{a.municipality.name}</span>
-                        <span className="text-zinc-600 ml-1.5">{a.municipality.cuenca}</span>
+                        <span className="text-zinc-500 ml-1.5">{a.municipality.cuenca}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 shrink-0">
@@ -360,7 +360,7 @@ export default function EjecutivoPage() {
                         <Activity size={10} />
                         {formatNumber(a.riverDischarge, 0)} m³/s
                       </span>
-                      <span className="text-zinc-600 flex items-center gap-1">
+                      <span className="text-zinc-500 flex items-center gap-1">
                         <Users size={10} />
                         {formatNumber(a.municipality.population || 0)}
                       </span>
@@ -400,20 +400,20 @@ export default function EjecutivoPage() {
                     </div>
                     <div className="grid grid-cols-4 gap-2 text-[11px]">
                       <div>
-                        <div className="text-zinc-500">Municipios</div>
-                        <div className="text-zinc-300 font-medium">{c.muniCount}</div>
+                        <div className="text-zinc-400">Municipios</div>
+                        <div className="text-zinc-200 font-medium">{c.muniCount}</div>
                       </div>
                       <div>
-                        <div className="text-zinc-500">Precip. prom.</div>
-                        <div className="text-zinc-300 font-medium">{formatNumber(c.avgPrecip, 1)} mm</div>
+                        <div className="text-zinc-400">Precip. prom.</div>
+                        <div className="text-zinc-200 font-medium">{formatNumber(c.avgPrecip, 1)} mm</div>
                       </div>
                       <div>
-                        <div className="text-zinc-500">Caudal máx.</div>
-                        <div className="text-zinc-300 font-medium">{formatNumber(c.maxDischarge, 0)} m³/s</div>
+                        <div className="text-zinc-400">Caudal máx.</div>
+                        <div className="text-zinc-200 font-medium">{formatNumber(c.maxDischarge, 0)} m³/s</div>
                       </div>
                       <div>
-                        <div className="text-zinc-500">Población</div>
-                        <div className="text-zinc-300 font-medium">{formatNumber(c.population)}</div>
+                        <div className="text-zinc-400">Población</div>
+                        <div className="text-zinc-200 font-medium">{formatNumber(c.population)}</div>
                       </div>
                     </div>
                   </div>
@@ -468,43 +468,43 @@ export default function EjecutivoPage() {
                       <div className="grid grid-cols-3 gap-2">
                         <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
                           <div className="text-lg font-bold text-zinc-100">{totalStations}</div>
-                          <div className="text-[10px] text-zinc-500">Estaciones IDEAM</div>
+                          <div className="text-[11px] text-zinc-400">Estaciones IDEAM</div>
                         </div>
                         <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
                           <div className="text-lg font-bold text-emerald-400">{activeStations}</div>
-                          <div className="text-[10px] text-zinc-500">Estaciones activas</div>
+                          <div className="text-[11px] text-zinc-400">Estaciones activas</div>
                         </div>
                         <div className="rounded-lg border border-zinc-700 p-2.5 text-center">
                           <div className="text-lg font-bold text-zinc-100">{cuencas.length}</div>
-                          <div className="text-[10px] text-zinc-500">Cuencas</div>
+                          <div className="text-[11px] text-zinc-400">Cuencas</div>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="rounded-lg border border-zinc-700 p-2.5">
                           <div className="flex items-center gap-1.5 mb-1">
                             <TrendingDown size={12} className="text-amber-400" />
-                            <span className="text-[10px] text-zinc-500">NBI Promedio</span>
+                            <span className="text-[11px] text-zinc-400">NBI Promedio</span>
                           </div>
                           <div className="text-lg font-bold text-amber-400">{avgNBI.toFixed(1)}%</div>
                         </div>
                         <div className="rounded-lg border border-zinc-700 p-2.5">
                           <div className="flex items-center gap-1.5 mb-1">
                             <Beef size={12} className="text-green-400" />
-                            <span className="text-[10px] text-zinc-500">Cabezas ganado</span>
+                            <span className="text-[11px] text-zinc-400">Cabezas ganado</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">{formatNumber(totalCattle)}</div>
                         </div>
                         <div className="rounded-lg border border-zinc-700 p-2.5">
                           <div className="flex items-center gap-1.5 mb-1">
                             <GraduationCap size={12} className="text-indigo-400" />
-                            <span className="text-[10px] text-zinc-500">Sedes educativas</span>
+                            <span className="text-[11px] text-zinc-400">Sedes educativas</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">{formatNumber(totalEdu)}</div>
                         </div>
                         <div className="rounded-lg border border-zinc-700 p-2.5">
                           <div className="flex items-center gap-1.5 mb-1">
                             <Hospital size={12} className="text-red-400" />
-                            <span className="text-[10px] text-zinc-500">Centros de salud</span>
+                            <span className="text-[11px] text-zinc-400">Centros de salud</span>
                           </div>
                           <div className="text-lg font-bold text-zinc-100">{formatNumber(totalHealth)}</div>
                         </div>

@@ -32,7 +32,7 @@ export default function LayerControl({ layers, onToggle }: LayerControlProps) {
       {expanded && (
         <div className="absolute right-0 mt-1 w-52 rounded-lg border border-zinc-700 bg-zinc-900/95 backdrop-blur shadow-xl overflow-hidden">
           <div className="px-3 py-2 border-b border-zinc-700">
-            <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">
+            <span className="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">
               Capas del mapa
             </span>
           </div>
@@ -46,7 +46,7 @@ export default function LayerControl({ layers, onToggle }: LayerControlProps) {
                 {layer.visible ? (
                   <Eye size={12} className="text-blue-400 shrink-0" />
                 ) : (
-                  <EyeOff size={12} className="text-zinc-600 shrink-0" />
+                  <EyeOff size={12} className="text-zinc-500 shrink-0" />
                 )}
                 {layer.color && (
                   <span
