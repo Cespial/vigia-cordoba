@@ -43,6 +43,9 @@ export default function Header() {
 
       {/* Desktop nav */}
       <nav className="hidden md:flex items-center gap-1">
+        <Link href="/comando" className="rounded-lg px-3 py-1.5 text-sm text-blue-400 hover:bg-blue-950/50 hover:text-blue-300 font-semibold transition-colors">
+          <span className="flex items-center gap-1.5"><Shield size={14} /> Comando</span>
+        </Link>
         <Link href="/" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><MapPin size={14} /> Mapa</span>
         </Link>
@@ -82,6 +85,9 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="absolute top-14 left-0 right-0 z-50 border-b border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 md:hidden">
           <nav className="flex flex-col gap-2">
+            <Link href="/comando" className="rounded-lg px-3 py-2 text-sm text-blue-400 font-semibold hover:bg-blue-950/50" onClick={() => setMobileMenuOpen(false)}>
+              Centro de Comando
+            </Link>
             <Link href="/" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Mapa en Tiempo Real
             </Link>

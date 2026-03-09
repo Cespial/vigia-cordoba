@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import Header from '@/components/dashboard/Header';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -16,7 +16,8 @@ import FloodChart from '@/components/charts/FloodChart';
 import Link from 'next/link';
 import {
   Shield, Users, Droplets, Activity, AlertTriangle,
-  MapPin, TrendingUp, Building2, GraduationCap, Beef, TrendingDown, Hospital, FileText
+  MapPin, TrendingUp, Building2, GraduationCap, Beef, TrendingDown, Hospital, FileText,
+  DollarSign, RefreshCw
 } from 'lucide-react';
 import stationsData from '@/data/ideam-stations.json';
 import nbiData from '@/data/nbi-data.json';
@@ -41,8 +42,63 @@ const levelBg: Record<string, string> = {
 };
 const levelSeverity: Record<string, number> = { rojo: 4, naranja: 3, amarillo: 2, verde: 1 };
 
+function normalize(name: string): string {
+  return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/g, '').trim();
+}
+function matchMuni(a: string, b: string): boolean {
+  const na = normalize(a), nb = normalize(b);
+  return na.includes(nb) || nb.includes(na) || na === nb;
+}
+
 export default function EjecutivoPage() {
-  const { alerts, loading } = useAlerts();
+  const { alerts, loading, refetch } = useAlerts();
+
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 300000);
+    return () => clearInterval(interval);
+  }, [refetch]);
+
+  const economicImpact = useMemo(() => {
+    if (alerts.length === 0) return null;
+
+    const riskFactors: Record<string, number> = { rojo: 0.15, naranja: 0.05, amarillo: 0.01 };
+    const infraFactors: Record<string, number> = { rojo: 0.03, naranja: 0.01 };
+
+    let totalAgricultural = 0;
+    let totalInfrastructure = 0;
+
+    alerts.forEach(a => {
+      const level = a.alertLevel.level;
+      if (level !== 'rojo' && level !== 'naranja') return;
+
+      const riskFactor = riskFactors[level];
+      const infraFactor = infraFactors[level];
+      const muniName = a.municipality.name;
+
+      // Agricultural loss
+      const livestock = (livestockData as LivestockRecord[]).find(l => matchMuni(l.municipality, muniName));
+      if (livestock) {
+        totalAgricultural += livestock.cattle_heads * 2_500_000 * riskFactor;
+      }
+
+      // Infrastructure risk
+      const edu = (educationData as EduRecord[]).find(e => matchMuni(e.municipality, muniName));
+      const health = (healthData as HealthRecord[]).find(h => matchMuni(h.municipality, muniName));
+      const eduCount = edu?.count ?? 0;
+      const healthTotal = health?.total ?? 0;
+      totalInfrastructure += (eduCount * 800_000_000 + healthTotal * 2_000_000_000) * riskFactor * infraFactor;
+    });
+
+    const total = totalAgricultural + totalInfrastructure;
+    return {
+      total,
+      agricultural: totalAgricultural,
+      infrastructure: totalInfrastructure,
+    };
+  }, [alerts]);
 
   const analysis = useMemo(() => {
     if (alerts.length === 0) return null;
@@ -145,6 +201,13 @@ export default function EjecutivoPage() {
             </div>
             <div className="flex items-center gap-4">
               <Link
+                href="/comando"
+                className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              >
+                <Shield size={14} />
+                Centro de Comando
+              </Link>
+              <Link
                 href="/reporte"
                 className="flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-700/50 hover:text-zinc-100 transition-colors"
               >
@@ -152,7 +215,13 @@ export default function EjecutivoPage() {
                 Generar Reporte
               </Link>
               <div className="text-right">
-                <div className="text-xs text-zinc-500">Última actualización</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-xs text-zinc-500">Última actualización</div>
+                  <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+                    <RefreshCw size={10} className="animate-spin" style={{ animationDuration: '3s' }} />
+                    Auto-refresh: 5min
+                  </span>
+                </div>
                 <div className="text-sm text-zinc-300">
                   {new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'medium', timeStyle: 'short' })}
                 </div>
@@ -230,6 +299,27 @@ export default function EjecutivoPage() {
               <div className="text-xs text-zinc-500 mt-1 truncate">{analysis.maxDischargeMuni}</div>
             </Card>
           </div>
+
+          {/* Impacto Económico Estimado */}
+          {economicImpact && economicImpact.total > 0 && (
+            <Card className="!p-4 border-amber-500/30 bg-amber-500/5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-amber-500/20">
+                  <DollarSign size={20} className="text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-zinc-200">Impacto Económico Estimado</h3>
+                  <p className="text-[10px] text-zinc-500">Pérdida potencial si no se actúa</p>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-amber-400 mb-1">
+                ${(economicImpact.total / 1_000_000_000).toFixed(1)} mil millones COP
+              </div>
+              <div className="text-xs text-zinc-400">
+                Agrícola: ${(economicImpact.agricultural / 1_000_000_000).toFixed(1)}mm | Infraestructura: ${(economicImpact.infrastructure / 1_000_000_000).toFixed(1)}mm
+              </div>
+            </Card>
+          )}
 
           {/* Two column layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
