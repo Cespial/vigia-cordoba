@@ -82,4 +82,19 @@ describe('Evento Inundación 2026 page', () => {
   it('renders the evento historico badge', () => {
     expect(screen.getByText('Evento Historico')).toBeDefined();
   });
+
+  it('renders the satellite comparison section', () => {
+    expect(screen.getByText(/Vista Satelital/)).toBeDefined();
+    expect(screen.getByText(/Arrastre para comparar/)).toBeDefined();
+    const images = screen.getAllByRole('img');
+    expect(images.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('renders sources section', () => {
+    expect(screen.getByText(/Fuentes y referencias/)).toBeDefined();
+    const links = screen.getAllByRole('link');
+    const hrefs = links.map((l) => l.getAttribute('href'));
+    expect(hrefs.some((h) => h?.includes('science.nasa.gov'))).toBe(true);
+    expect(hrefs.some((h) => h?.includes('copernicus'))).toBe(true);
+  });
 });
