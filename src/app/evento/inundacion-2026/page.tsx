@@ -261,14 +261,16 @@ export default function EventoInundacion2026() {
           Extension de la Inundacion
         </h2>
         <p className="text-sm text-zinc-400 mb-6">
-          Imagenes satelitales NASA MODIS mostrando la progresion dia a dia.
-          Presione <span className="text-blue-400">&#9654;</span> para ver la
-          animacion o arrastre el control deslizante.
+          Visualizacion de la progresion de la inundacion sobre los 30 municipios
+          del departamento. Presione{' '}
+          <span className="text-blue-400">&#9654;</span> para ver la animacion
+          o arrastre el control deslizante. Pase el cursor sobre cada municipio
+          para ver las hectareas afectadas.
         </p>
         <FloodMap />
         <p className="mt-3 text-[11px] text-zinc-500">
-          Fuente: NASA MODIS NRT Global Flood Product &middot; Resolucion: 250m
-          &middot; Composicion: 3 dias
+          Fuente: MapBiomas (Sentinel-1/2) &middot; UNGRD &middot; Copernicus
+          EMSR865 &middot; Datos de extension por municipio
         </p>
       </section>
 
