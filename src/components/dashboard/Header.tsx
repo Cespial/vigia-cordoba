@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X, Clock, History, MapPin, Waves, BarChart3, Scale, FileText } from 'lucide-react';
+import { Shield, Menu, X, Clock, History, MapPin, Waves, BarChart3, Scale, FileText, AlertTriangle } from 'lucide-react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,6 +64,9 @@ export default function Header() {
         <Link href="/reporte" className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors">
           <span className="flex items-center gap-1.5"><FileText size={14} /> Reporte</span>
         </Link>
+        <Link href="/evento/inundacion-2026" className="rounded-lg px-3 py-1.5 text-sm text-red-400 hover:bg-red-950/50 hover:text-red-300 font-semibold transition-colors">
+          <span className="flex items-center gap-1.5"><AlertTriangle size={14} /> Feb 2026</span>
+        </Link>
       </nav>
 
       <div className="flex items-center gap-3">
@@ -102,6 +105,9 @@ export default function Header() {
             </Link>
             <Link href="/comparador" className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400" onClick={() => setMobileMenuOpen(false)}>
               Comparador
+            </Link>
+            <Link href="/evento/inundacion-2026" className="rounded-lg px-3 py-2 text-sm text-red-400 font-semibold hover:bg-red-950/50" onClick={() => setMobileMenuOpen(false)}>
+              Evento Feb 2026
             </Link>
           </nav>
         </div>
