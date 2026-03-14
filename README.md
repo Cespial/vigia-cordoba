@@ -7,6 +7,8 @@
 [![Mapbox GL](https://img.shields.io/badge/Mapbox_GL-3-000?logo=mapbox&logoColor=white)](https://www.mapbox.com)
 [![Vitest](https://img.shields.io/badge/Tested_with-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev)
 
+**Live:** [vigia-cordoba.vercel.app](https://vigia-cordoba.vercel.app)
+
 ## Descripción
 
 Vigía Córdoba integra datos de estaciones IDEAM, registros históricos de la UNGRD, índices ENSO/ONI y pronósticos meteorológicos para ofrecer una herramienta de toma de decisiones para gestores del riesgo, alcaldías y organismos de socorro en los 30 municipios de Córdoba.
